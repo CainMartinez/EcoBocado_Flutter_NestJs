@@ -11,6 +11,7 @@ import { ThrottlerModule } from '@nestjs/throttler/dist/throttler.module';
 import { ProfileModule } from './profile/profile.module';
 import { MediaModule } from './media/media.module';
 import { AdminModule } from './admin/admin.module';
+import { DeliveryModule } from './delivery/delivery.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { AdminModule } from './admin/admin.module';
     ProfileModule,
     MediaModule,
     AdminModule,
+    DeliveryModule,
   ],
 })
 export class AppModule {}
