@@ -5,6 +5,14 @@ import { DomainExceptionFilter } from './shared/presentation/filters/domain-exce
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  app.enableCors({
+    origin: true, // Permite todas las origenes en desarrollo
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  });
+  
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new DomainExceptionFilter());
   
@@ -18,6 +26,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 }
 bootstrap();
