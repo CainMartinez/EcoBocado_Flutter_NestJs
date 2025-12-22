@@ -28,13 +28,7 @@ class SettingsPage extends ConsumerWidget {
               onChanged: (value) {
                 ref.read(preferencesProvider.notifier).updateAppNotifications(value);
               },
-            ),
-            SettingsSwitchTile(
-              label: l10n.emailNotifications,
-              value: preferences.emailNotifications ?? false,
-              onChanged: (value) {
-                ref.read(preferencesProvider.notifier).updateEmailNotifications(value);
-              },
+              icon: Icons.notifications,
             ),
             SettingsSwitchTile(
               label: l10n.whatsappNotifications,
@@ -42,9 +36,10 @@ class SettingsPage extends ConsumerWidget {
               onChanged: (value) {
                 ref.read(preferencesProvider.notifier).updateWhatsappNotifications(value);
               },
+              icon: Icons.chat,
             ),
             const SizedBox(height: 24),
-            SettingsSectionTitle(text: l10n.appearanceSection),
+            SettingsSectionTitle(text: l10n.appearanceSection),   
             SettingsSwitchTile(
               label: l10n.darkMode,
               value: preferences.darkMode ?? false,

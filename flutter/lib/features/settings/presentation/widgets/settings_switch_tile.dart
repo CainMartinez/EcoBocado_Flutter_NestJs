@@ -9,6 +9,7 @@ class SettingsSwitchTile extends StatelessWidget {
     this.subtitle,
     this.contentPadding,
     this.secondary,
+    this.icon,
   });
 
   final String label;
@@ -17,6 +18,7 @@ class SettingsSwitchTile extends StatelessWidget {
   final String? subtitle;
   final EdgeInsetsGeometry? contentPadding;
   final Widget? secondary;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class SettingsSwitchTile extends StatelessWidget {
       title: Text(label),
       subtitle: subtitle == null ? null : Text(subtitle!),
       contentPadding: contentPadding,
-      secondary: secondary,
+      secondary: secondary ?? (icon != null ? Icon(icon) : null),
       onChanged: onChanged,
     );
   }
