@@ -28,12 +28,18 @@ export class OrderOrmEntity {
   @Column({ type: 'varchar', length: 32, default: () => "'confirmed'" })
   status: string; // draft|confirmed|prepared|delivered|cancelled
 
+  @Column({ name: 'delivery_type', type: 'enum', enum: ['pickup', 'delivery'], default: 'pickup' })
+  deliveryType: 'pickup' | 'delivery';
+
   @Column({ name: 'pickup_slot_id', type: 'int', nullable: true })
   pickupSlotId: number | null;
 
   @ManyToOne(() => PickupSlotOrmEntity, { eager: false })
   @JoinColumn({ name: 'pickup_slot_id' })
   pickupSlot: PickupSlotOrmEntity;
+
+  @Column({ name: 'payment_intent_id', type: 'varchar', length: 255, nullable: true })
+  paymentIntentId: string | null;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: () => '0.00' })
   subtotal: number;

@@ -1,4 +1,5 @@
-export type OrderStatus = 'draft' | 'confirmed' | 'prepared' | 'delivered' | 'cancelled';
+export type OrderStatus = 'draft' | 'pending_payment' | 'confirmed' | 'prepared' | 'delivered' | 'cancelled';
+export type DeliveryType = 'pickup' | 'delivery';
 
 export class Order {
   readonly id: number;
@@ -6,8 +7,10 @@ export class Order {
 
   readonly userId: number;
   readonly status: OrderStatus;
+  readonly deliveryType: DeliveryType;
 
   readonly pickupSlotId: number | null;
+  readonly paymentIntentId: string | null;
 
   readonly subtotal: number;
   readonly total: number;
@@ -25,7 +28,9 @@ export class Order {
     uuid: string | null;
     userId: number;
     status: OrderStatus;
+    deliveryType: DeliveryType;
     pickupSlotId: number | null;
+    paymentIntentId: string | null;
     subtotal: number;
     total: number;
     currency: string;
@@ -39,8 +44,10 @@ export class Order {
 
     this.userId = props.userId;
     this.status = props.status;
+    this.deliveryType = props.deliveryType;
 
     this.pickupSlotId = props.pickupSlotId ?? null;
+    this.paymentIntentId = props.paymentIntentId ?? null;
 
     this.subtotal = props.subtotal;
     this.total = props.total;
@@ -59,7 +66,9 @@ export class Order {
     uuid: string | null;
     userId: number;
     status: OrderStatus;
+    deliveryType: DeliveryType;
     pickupSlotId: number | null;
+    paymentIntentId: string | null;
     subtotal: number;
     total: number;
     currency: string;
@@ -73,7 +82,9 @@ export class Order {
       uuid: p.uuid ?? null,
       userId: p.userId,
       status: p.status,
+      deliveryType: p.deliveryType,
       pickupSlotId: p.pickupSlotId ?? null,
+      paymentIntentId: p.paymentIntentId ?? null,
       subtotal: p.subtotal,
       total: p.total,
       currency: p.currency,

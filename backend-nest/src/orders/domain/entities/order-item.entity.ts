@@ -12,6 +12,8 @@ export class OrderItem {
   readonly unitPrice: number;           // DECIMAL(10,2)
   readonly lineTotal: number;           // DECIMAL(10,2)
 
+  readonly itemName?: string;           // Nombre del producto o menú
+
   readonly isActive: boolean;
 
   readonly createdAt: Date;
@@ -26,6 +28,7 @@ export class OrderItem {
     quantity: number;
     unitPrice: number;
     lineTotal: number;
+    itemName?: string;
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -40,6 +43,8 @@ export class OrderItem {
     this.quantity = props.quantity;
     this.unitPrice = props.unitPrice;
     this.lineTotal = props.lineTotal;
+
+    this.itemName = props.itemName;
 
     this.isActive = props.isActive;
 
@@ -56,6 +61,7 @@ export class OrderItem {
     quantity: number;
     unitPrice: number;
     lineTotal: number;
+    itemName?: string;
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -69,6 +75,7 @@ export class OrderItem {
       quantity: p.quantity,
       unitPrice: p.unitPrice,
       lineTotal: p.lineTotal,
+      itemName: p.itemName,
       isActive: p.isActive,
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
