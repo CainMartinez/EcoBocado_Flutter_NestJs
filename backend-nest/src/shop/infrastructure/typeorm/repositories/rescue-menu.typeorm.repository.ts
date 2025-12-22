@@ -80,6 +80,7 @@ export class RescueMenuTypeOrmRepository extends IRescueMenuRepository {
     }
 
     // Filtro por alérgenos (INVERSO: excluir menús cuyos productos contengan estos alérgenos)
+    // IMPORTANTE: mayContain se trata igual que contains por seguridad
     if (filters.excludeAllergens && filters.excludeAllergens.length > 0) {
       
       // Ensure it's an array
@@ -87,20 +88,23 @@ export class RescueMenuTypeOrmRepository extends IRescueMenuRepository {
         ? filters.excludeAllergens 
         : [filters.excludeAllergens];
       
-      // Un menú se excluye si CUALQUIERA de sus productos contiene los alérgenos
+      // Un menú se excluye si CUALQUIERA de sus 4 productos contiene los alérgenos
+      // Usar OR entre las 4 consultas para que si algún producto tiene el alérgeno, se excluya el menú
       query.andWhere((qb) => {
         const subQuery = qb
           .subQuery()
           .select('DISTINCT rm.id')
           .from('rescue_menus', 'rm')
-          .innerJoin('product_allergen', 'pa1', 'pa1.productId = rm.drink_id')
-          .innerJoin('product_allergen', 'pa2', 'pa2.productId = rm.starter_id')
-          .innerJoin('product_allergen', 'pa3', 'pa3.productId = rm.main_id')
-          .innerJoin('product_allergen', 'pa4', 'pa4.productId = rm.dessert_id')
-          .where('pa1.allergenCode IN (:...allergens) AND pa1.contains = true', { allergens: allergensList })
-          .orWhere('pa2.allergenCode IN (:...allergens) AND pa2.contains = true')
-          .orWhere('pa3.allergenCode IN (:...allergens) AND pa3.contains = true')
-          .orWhere('pa4.allergenCode IN (:...allergens) AND pa4.contains = true')
+          // Verificar bebida
+          .leftJoin('product_allergen', 'pa1', 'pa1.productId = rm.drink_id AND pa1.allergenCode IN (:...allergens) AND (pa1.contains = true OR pa1.mayContain = true)', { allergens: allergensList })
+          // Verificar entrante
+          .leftJoin('product_allergen', 'pa2', 'pa2.productId = rm.starter_id AND pa2.allergenCode IN (:...allergens) AND (pa2.contains = true OR pa2.mayContain = true)')
+          // Verificar principal
+          .leftJoin('product_allergen', 'pa3', 'pa3.productId = rm.main_id AND pa3.allergenCode IN (:...allergens) AND (pa3.contains = true OR pa3.mayContain = true)')
+          // Verificar postre
+          .leftJoin('product_allergen', 'pa4', 'pa4.productId = rm.dessert_id AND pa4.allergenCode IN (:...allergens) AND (pa4.contains = true OR pa4.mayContain = true)')
+          // Si alguno de los productos tiene el alérgeno, excluir el menú
+          .where('pa1.productId IS NOT NULL OR pa2.productId IS NOT NULL OR pa3.productId IS NOT NULL OR pa4.productId IS NOT NULL')
           .getQuery();
         return `menu.id NOT IN ${subQuery}`;
       });

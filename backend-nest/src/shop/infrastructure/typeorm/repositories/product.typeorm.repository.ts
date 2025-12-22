@@ -86,6 +86,7 @@ export class ProductTypeOrmRepository extends IProductRepository {
     }
 
     // Filtro por alérgenos (INVERSO: excluir productos que contengan estos alérgenos)
+    // IMPORTANTE: mayContain se trata igual que contains por seguridad
     if (filters.excludeAllergens && filters.excludeAllergens.length > 0) {      
       // Ensure it's an array
       const allergensList = Array.isArray(filters.excludeAllergens) 
@@ -98,7 +99,7 @@ export class ProductTypeOrmRepository extends IProductRepository {
           .select('pa.productId')
           .from('product_allergen', 'pa')
           .where('pa.allergenCode IN (:...allergens)', { allergens: allergensList })
-          .andWhere('pa.contains = true')
+          .andWhere('(pa.contains = true OR pa.mayContain = true)')
           .getQuery();
         return `product.id NOT IN ${subQuery}`;
       });

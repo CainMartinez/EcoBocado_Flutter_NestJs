@@ -13,6 +13,7 @@ import { CatalogAssembler } from './presentation/assemblers/catalog.assembler';
 import { IRescueMenuRepository } from './domain/repositories/rescue-menu.repository';
 import { RescueMenuTypeOrmRepository } from './infrastructure/typeorm/repositories/rescue-menu.typeorm.repository';
 import { ImageOrmEntity } from '../media/infrastructure/typeorm/entities-orm/image.orm-entity';
+import { ProfileModule } from '../profile/profile.module';
 // import { SeedOnBootProvider } from './../db/seed-on-boot.provider';
 
 @Module({
@@ -25,6 +26,7 @@ import { ImageOrmEntity } from '../media/infrastructure/typeorm/entities-orm/ima
       ProductAllergenOrmEntity,
       ImageOrmEntity,
     ]),
+    ProfileModule, // Importar ProfileModule para acceder a USER_ALLERGEN_REPOSITORY_TOKEN
   ],
   controllers: [ProductsController],
   providers: [

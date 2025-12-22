@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AllergenResponseDto {
-  @ApiProperty({ example: 'gluten' })
+  @ApiProperty({ example: 'gluten', description: 'Código único del alérgeno' })
   code: string;
 
   @ApiProperty({ example: 'Gluten' })
