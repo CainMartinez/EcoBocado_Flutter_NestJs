@@ -2,8 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { DeliveryDriverOrmEntity } from './infrastructure/typeorm/entities-orm/delivery-driver.orm-entity';
+import { DeliveryOrmEntity } from './infrastructure/typeorm/entities-orm/delivery.orm-entity';
 import { DeliveryDriverTypeOrmRepository } from './infrastructure/typeorm/repositories/delivery-driver.typeorm.repository';
+import { TypeOrmDeliveryRepository } from './infrastructure/typeorm/repositories/typeorm-delivery.repository';
 import { IDeliveryDriverRepository } from './domain/repositories/delivery-driver.repository';
+import { DELIVERY_REPOSITORY_TOKEN } from './domain/repositories/delivery.repository.interface';
 import { DeliveryJwtTokenService } from './infrastructure/token/delivery-jwt-token.service';
 import { DeliveryJwtStrategy } from './infrastructure/strategies/delivery-jwt.strategy';
 import { DeliveryLoginUseCase } from './application/use_cases/delivery-login.usecase';
@@ -18,7 +21,7 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([DeliveryDriverOrmEntity]),
+    TypeOrmModule.forFeature([DeliveryDriverOrmEntity, DeliveryOrmEntity]),
     JwtModule.register({
       secret: process.env.JWT_SECRET ?? 'dev-secret-change-me',
       signOptions: {
@@ -42,9 +45,14 @@ import { AuthModule } from '../auth/auth.module';
       provide: IDeliveryDriverRepository,
       useExisting: DeliveryDriverTypeOrmRepository,
     },
+    {
+      provide: DELIVERY_REPOSITORY_TOKEN,
+      useClass: TypeOrmDeliveryRepository,
+    },
   ],
   exports: [
     DeliveryJwtTokenService,
+    DELIVERY_REPOSITORY_TOKEN,
     {
       provide: IDeliveryDriverRepository,
       useExisting: DeliveryDriverTypeOrmRepository,
