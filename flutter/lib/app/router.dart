@@ -5,8 +5,15 @@ import 'package:go_router/go_router.dart';
 import 'package:eco_bocado/core/layout/app_shell.dart';
 import 'package:eco_bocado/features/home/presentation/pages/home_page.dart';
 import 'package:eco_bocado/features/profile/presentation/pages/profile_page.dart';
+import 'package:eco_bocado/features/profile/presentation/pages/user_addresses_management_page.dart';
 import 'package:eco_bocado/features/shop/presentation/pages/shop_page.dart';
 import 'package:eco_bocado/features/admin/presentation/pages/products_admin_page.dart';
+import 'package:eco_bocado/features/orders/presentation/screens/orders_screen.dart';
+import 'package:eco_bocado/features/orders/presentation/pages/delivery_method_selection_page.dart';
+import 'package:eco_bocado/features/orders/presentation/pages/pickup_selection_page.dart';
+import 'package:eco_bocado/features/orders/presentation/pages/delivery_address_selection_page.dart';
+import 'package:eco_bocado/features/orders/presentation/pages/delivery_time_selection_page.dart';
+import 'package:eco_bocado/features/orders/presentation/pages/temporary_address_form_page.dart';
 
 import 'package:eco_bocado/core/widgets/auth_gate.dart';
 
@@ -43,7 +50,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => const NoTransitionPage(
               child: AuthGate(
                 authPageKey: ValueKey('orders-auth'),
-                child: Center(child: Text('Listado de pedidos')),
+                child: OrdersScreen(),
               ),
             ),
           ),
@@ -88,6 +95,34 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ),
         ],
+      ),
+      
+      // Rutas fuera del shell (pantallas completas)
+      GoRoute(
+        path: '/delivery-method-selection',
+        builder: (context, state) => const DeliveryMethodSelectionPage(),
+      ),
+      GoRoute(
+        path: '/pickup-selection',
+        builder: (context, state) => const PickupSelectionPage(),
+      ),
+      GoRoute(
+        path: '/delivery-address-selection',
+        builder: (context, state) => const DeliveryAddressSelectionPage(),
+      ),
+      GoRoute(
+        path: '/delivery-time-selection',
+        builder: (context, state) => DeliveryTimeSelectionPage(
+          addressData: state.extra as Map<String, dynamic>?,
+        ),
+      ),
+      GoRoute(
+        path: '/temporary-address-form',
+        builder: (context, state) => const TemporaryAddressFormPage(),
+      ),
+      GoRoute(
+        path: '/user-addresses-management',
+        builder: (context, state) => const UserAddressesManagementPage(),
       ),
     ],
   );
