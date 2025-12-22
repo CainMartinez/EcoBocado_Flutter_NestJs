@@ -19,7 +19,7 @@ export class JwtTokenService {
   }
 
   private get accessTtl(): number | MsStringValue {
-    return this.parseExpires(process.env.JWT_EXPIRES_IN, '15m' as MsStringValue);
+    return this.parseExpires(process.env.JWT_EXPIRES_IN, '1d' as MsStringValue);
   }
   private get refreshTtl(): number | MsStringValue {
     return this.parseExpires(process.env.JWT_REFRESH_EXPIRES_IN, '7d' as MsStringValue);
