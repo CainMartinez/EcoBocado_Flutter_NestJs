@@ -11,6 +11,7 @@ import '../widgets/product_detail_modal.dart';
 import '../../../cart/presentation/providers/cart_provider.dart';
 import '../../../cart/presentation/pages/cart_page.dart';
 import '../../../../core/widgets/app_filter_chip.dart';
+import '../../../profile/presentation/providers/user_allergens_provider.dart';
 
 class ShopPage extends ConsumerStatefulWidget {
   const ShopPage({super.key});
@@ -35,8 +36,26 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     _scrollController.addListener(_onScroll);
     // Carga inicial
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadCatalog();
+      _loadUserAllergensAndCatalog();
     });
+  }
+
+  /// Carga los alérgenos del usuario y luego el catálogo
+  Future<void> _loadUserAllergensAndCatalog() async {
+    // Intentar cargar los alérgenos del usuario
+    final userAllergensAsync = ref.read(userAllergensProvider);
+    
+    if (userAllergensAsync.hasValue) {
+      final userAllergens = userAllergensAsync.value ?? [];
+      setState(() {
+        // Poblar _excludedAllergens con los alérgenos del usuario
+        _excludedAllergens.clear();
+        _excludedAllergens.addAll(userAllergens);
+      });
+    }
+    
+    // Cargar el catálogo con los filtros iniciales
+    _loadCatalog();
   }
 
   @override
@@ -149,6 +168,10 @@ class _ShopPageState extends ConsumerState<ShopPage> {
   }
 
   void _showAllergenSelector(AsyncValue<List<Allergen>> allergensAsync) {
+    // Obtener los alérgenos del perfil del usuario
+    final userAllergensAsync = ref.read(userAllergensProvider);
+    final userAllergens = userAllergensAsync.value ?? [];
+    
     allergensAsync.when(
       data: (allergens) {
         showModalBottomSheet(
@@ -186,6 +209,32 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                       ],
                     ),
                   ),
+                  // Mensaje informativo sobre protección automática
+                  if (userAllergens.isNotEmpty)
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.shield, color: Colors.orange.shade700, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Los alérgenos con 🛡️ están en tu perfil de protección y se aplican automáticamente',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.orange.shade900,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   const Divider(),
                   Expanded(
                     child: ListView.builder(
@@ -194,9 +243,39 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                       itemBuilder: (context, index) {
                         final allergen = allergens[index];
                         final isSelected = _excludedAllergens.contains(allergen.code);
+                        final isFromProfile = userAllergens.contains(allergen.code);
+                        
                         return CheckboxListTile(
-                          title: Text(allergen.name(context)),
+                          title: Row(
+                            children: [
+                              Expanded(child: Text(allergen.displayName(context))),
+                              if (isFromProfile)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange.shade100,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.shield, size: 14, color: Colors.orange.shade700),
+                                      const SizedBox(width: 2),
+                                      Text(
+                                        'Perfil',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.orange.shade900,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
                           value: isSelected,
+                          activeColor: isFromProfile ? Colors.orange : null,
                           onChanged: (value) {
                             setState(() {
                               if (value == true) {
@@ -236,25 +315,31 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: Text(l10n.sortBy),
-            trailing: IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () => Navigator.pop(context),
-            ),
+      isScrollControlled: true,
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(l10n.sortBy),
+                trailing: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+              const Divider(),
+              _buildSortOption(l10n.sortByNewest, 'createdAt', 'desc'),
+              _buildSortOption(l10n.sortByOldest, 'createdAt', 'asc'),
+              _buildSortOption(l10n.sortByPriceAsc, 'price', 'asc'),
+              _buildSortOption(l10n.sortByPriceDesc, 'price', 'desc'),
+              _buildSortOption(l10n.sortByNameAsc, 'name', 'asc'),
+              _buildSortOption(l10n.sortByNameDesc, 'name', 'asc'),
+              const SizedBox(height: 16),
+            ],
           ),
-          const Divider(),
-          _buildSortOption(l10n.sortByNewest, 'createdAt', 'desc'),
-          _buildSortOption(l10n.sortByOldest, 'createdAt', 'asc'),
-          _buildSortOption(l10n.sortByPriceAsc, 'price', 'asc'),
-          _buildSortOption(l10n.sortByPriceDesc, 'price', 'desc'),
-          _buildSortOption(l10n.sortByNameAsc, 'name', 'asc'),
-          _buildSortOption(l10n.sortByNameDesc, 'name', 'desc'),
-          const SizedBox(height: 16),
-        ],
+        ),
       ),
     );
   }
@@ -430,6 +515,60 @@ class _ShopPageState extends ConsumerState<ShopPage> {
           ),
           
           const Divider(),
+          
+          // Banner de protección automática
+          Consumer(
+            builder: (context, ref, _) {
+              final userAllergensAsync = ref.watch(userAllergensProvider);
+              return userAllergensAsync.when(
+                data: (userAllergens) {
+                  if (userAllergens.isEmpty) return const SizedBox.shrink();
+                  
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.orange.shade50, Colors.orange.shade100],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.orange.shade300),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.shield_outlined, color: Colors.orange.shade700, size: 24),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '🛡️ Protección Automática Activa',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange.shade900,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Se están filtrando ${userAllergens.length} alérgeno${userAllergens.length > 1 ? 's' : ''} de tu perfil',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.orange.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                loading: () => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
+              );
+            },
+          ),
           
           // Lista de productos
           Expanded(

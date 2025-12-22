@@ -17,10 +17,13 @@ class Allergen {
   });
 
   /// Retorna el nombre según el idioma del contexto
-  String name(BuildContext context) {
+  String displayName(BuildContext context) {
     final locale = Localizations.localeOf(context);
     return locale.languageCode == 'en' ? nameEn : nameEs;
   }
+  
+  /// Retorna el nombre sin contexto (usa español por defecto)
+  String get name => nameEs;
 
   factory Allergen.fromJson(Map<String, dynamic> json) {
     return Allergen(

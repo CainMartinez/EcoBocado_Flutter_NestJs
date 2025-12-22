@@ -247,7 +247,7 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                                     label: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text(allergen.name(context)),
+                                        Text(allergen.displayName(context)),
                                         if (isContains || isMayContain) ...[
                                           const SizedBox(width: 4),
                                           Text(

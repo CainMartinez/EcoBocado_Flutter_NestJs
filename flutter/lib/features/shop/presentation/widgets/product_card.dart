@@ -76,22 +76,7 @@ class ProductCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     
-                    const SizedBox(height: 4),
-                    
-                    // Descripción con espacio flexible
-                    Expanded(
-                      child: Text(
-                        item.description(context),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 11,
-                              height: 1.2,
-                            ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 6),
+                    const Spacer(),
                     
                     // Precio y botón añadir
                     Row(
