@@ -8,6 +8,7 @@ import 'package:eco_bocado/features/profile/presentation/pages/change_password_p
 import 'package:eco_bocado/features/profile/presentation/widgets/profile_avatar.dart';
 import 'package:eco_bocado/features/profile/presentation/widgets/profile_role_badge.dart';
 import 'package:eco_bocado/features/profile/presentation/widgets/profile_info_row.dart';
+import 'package:eco_bocado/features/profile/presentation/widgets/user_allergens_section.dart';
 import 'package:eco_bocado/features/auth/presentation/providers/auth_provider.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -77,7 +78,11 @@ class ProfilePage extends ConsumerWidget {
                 Center(
                   child: ProfileRoleBadge(isAdmin: profile.isAdmin),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
+
+                // 🌟 SECCIÓN DESTACADA DE ALÉRGENOS - VALOR AÑADIDO DE LA APP 🌟
+                const UserAllergensSection(),
+                const SizedBox(height: 24),
 
                 // Sección de información
                 Card(
@@ -157,6 +162,21 @@ class ProfilePage extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
+
+                // Botón de gestionar direcciones (solo para usuarios normales)
+                if (profile.isUser) ...[
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      context.push('/user-addresses-management');
+                    },
+                    icon: const Icon(Icons.location_on),
+                    label: const Text('Mis direcciones de entrega'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
 
                 // Botón de cambiar contraseña (solo para usuarios normales)
                 if (profile.isUser) ...[
