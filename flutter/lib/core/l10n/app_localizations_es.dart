@@ -693,4 +693,42 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get salesDataWillAppearHere =>
       'Los datos de ventas aparecerán aquí cuando se realicen compras';
+
+  @override
+  String get noBillingRecords => 'No hay registros de facturación';
+
+  @override
+  String get billingRecordsWillAppearHere =>
+      'Los registros de facturación aparecerán aquí';
+
+  @override
+  String get errorLoadingBillingRecords =>
+      'Error al cargar registros de facturación';
+
+  @override
+  String get customer => 'Cliente';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get issuedAt => 'Emitida el';
+
+  @override
+  String get order => 'Pedido';
+
+  @override
+  String get status => 'Estado';
+
+  @override
+  String get statusRequested => 'Solicitada';
+
+  @override
+  String get statusIssued => 'Emitida';
+
+  @override
+  String get statusCancelled => 'Cancelada';
+
+  @override
+  String get createdAt => 'Creada el';
 }

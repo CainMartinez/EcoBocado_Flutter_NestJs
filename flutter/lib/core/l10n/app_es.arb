@@ -928,5 +928,53 @@
   "salesDataWillAppearHere": "Los datos de ventas aparecerán aquí cuando se realicen compras",
   "@salesDataWillAppearHere": {
     "description": "Mensaje de datos de ventas vacíos"
+  },
+  "noBillingRecords": "No hay registros de facturación",
+  "@noBillingRecords": {
+    "description": "No hay registros de facturación"
+  },
+  "billingRecordsWillAppearHere": "Los registros de facturación aparecerán aquí",
+  "@billingRecordsWillAppearHere": {
+    "description": "Mensaje de registros de facturación vacíos"
+  },
+  "errorLoadingBillingRecords": "Error al cargar registros de facturación",
+  "@errorLoadingBillingRecords": {
+    "description": "Error al cargar registros de facturación"
+  },
+  "customer": "Cliente",
+  "@customer": {
+    "description": "Cliente"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Email"
+  },
+  "issuedAt": "Emitida el",
+  "@issuedAt": {
+    "description": "Fecha de emisión"
+  },
+  "order": "Pedido",
+  "@order": {
+    "description": "Pedido"
+  },
+  "status": "Estado",
+  "@status": {
+    "description": "Estado"
+  },
+  "statusRequested": "Solicitada",
+  "@statusRequested": {
+    "description": "Estado solicitada"
+  },
+  "statusIssued": "Emitida",
+  "@statusIssued": {
+    "description": "Estado emitida"
+  },
+  "statusCancelled": "Cancelada",
+  "@statusCancelled": {
+    "description": "Estado cancelada"
+  },
+  "createdAt": "Creada el",
+  "@createdAt": {
+    "description": "Fecha de creación"
   }
 }

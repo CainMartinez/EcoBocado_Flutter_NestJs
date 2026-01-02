@@ -689,4 +689,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get salesDataWillAppearHere =>
       'Sales data will appear here when purchases are made';
+
+  @override
+  String get noBillingRecords => 'No billing records';
+
+  @override
+  String get billingRecordsWillAppearHere => 'Billing records will appear here';
+
+  @override
+  String get errorLoadingBillingRecords => 'Error loading billing records';
+
+  @override
+  String get customer => 'Customer';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get issuedAt => 'Issued on';
+
+  @override
+  String get order => 'Order';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get statusRequested => 'Requested';
+
+  @override
+  String get statusIssued => 'Issued';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get createdAt => 'Created on';
 }

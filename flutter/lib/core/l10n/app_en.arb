@@ -928,5 +928,53 @@
   "salesDataWillAppearHere": "Sales data will appear here when purchases are made",
   "@salesDataWillAppearHere": {
     "description": "Empty sales data message"
+  },
+  "noBillingRecords": "No billing records",
+  "@noBillingRecords": {
+    "description": "No billing records"
+  },
+  "billingRecordsWillAppearHere": "Billing records will appear here",
+  "@billingRecordsWillAppearHere": {
+    "description": "Empty billing records message"
+  },
+  "errorLoadingBillingRecords": "Error loading billing records",
+  "@errorLoadingBillingRecords": {
+    "description": "Error loading billing records"
+  },
+  "customer": "Customer",
+  "@customer": {
+    "description": "Customer"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Email"
+  },
+  "issuedAt": "Issued on",
+  "@issuedAt": {
+    "description": "Issue date"
+  },
+  "order": "Order",
+  "@order": {
+    "description": "Order"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "Status"
+  },
+  "statusRequested": "Requested",
+  "@statusRequested": {
+    "description": "Status requested"
+  },
+  "statusIssued": "Issued",
+  "@statusIssued": {
+    "description": "Status issued"
+  },
+  "statusCancelled": "Cancelled",
+  "@statusCancelled": {
+    "description": "Status cancelled"
+  },
+  "createdAt": "Created on",
+  "@createdAt": {
+    "description": "Creation date"
   }
 }

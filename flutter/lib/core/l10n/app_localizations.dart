@@ -1405,6 +1405,78 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Los datos de ventas aparecerán aquí cuando se realicen compras'**
   String get salesDataWillAppearHere;
+
+  /// No hay registros de facturación
+  ///
+  /// In es, this message translates to:
+  /// **'No hay registros de facturación'**
+  String get noBillingRecords;
+
+  /// Mensaje de registros de facturación vacíos
+  ///
+  /// In es, this message translates to:
+  /// **'Los registros de facturación aparecerán aquí'**
+  String get billingRecordsWillAppearHere;
+
+  /// Error al cargar registros de facturación
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar registros de facturación'**
+  String get errorLoadingBillingRecords;
+
+  /// Cliente
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get customer;
+
+  /// Email
+  ///
+  /// In es, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// Fecha de emisión
+  ///
+  /// In es, this message translates to:
+  /// **'Emitida el'**
+  String get issuedAt;
+
+  /// Pedido
+  ///
+  /// In es, this message translates to:
+  /// **'Pedido'**
+  String get order;
+
+  /// Estado
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get status;
+
+  /// Estado solicitada
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitada'**
+  String get statusRequested;
+
+  /// Estado emitida
+  ///
+  /// In es, this message translates to:
+  /// **'Emitida'**
+  String get statusIssued;
+
+  /// Estado cancelada
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelada'**
+  String get statusCancelled;
+
+  /// Fecha de creación
+  ///
+  /// In es, this message translates to:
+  /// **'Creada el'**
+  String get createdAt;
 }
 
 class _AppLocalizationsDelegate
