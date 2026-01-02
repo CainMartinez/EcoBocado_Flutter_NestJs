@@ -6,13 +6,35 @@ import { Admin } from '../../../auth/domain/entities/admins.entity';
 
 @Injectable()
 export class ProfileAssembler {
+  /**
+   * Convierte un Profile y datos del owner a ProfileResponseDto
+   */
+  toDto(profile: Profile, email: string, name: string): ProfileResponseDto {
+    const dto = new ProfileResponseDto();
+    dto.ownerType = profile.ownerType;
+    dto.ownerId = profile.ownerId;
+    dto.email = email;
+    dto.name = name;
+    dto.avatarUrl = profile.avatarUrl;
+    dto.phone = profile.phone;
+    dto.addressLine1 = profile.addressLine1;
+    dto.addressLine2 = profile.addressLine2;
+    dto.city = profile.city;
+    dto.postalCode = profile.postalCode;
+    dto.countryCode = profile.countryCode;
+    dto.isActive = profile.isActive;
+    dto.createdAt = profile.createdAt;
+    dto.updatedAt = profile.updatedAt;
+    return dto;
+  }
+
   toDtoFromUser(user: User, profile: Profile | null): ProfileResponseDto {
     const dto = new ProfileResponseDto();
     dto.ownerType = 'user';
     dto.ownerId = user.id;
     dto.email = user.email;
     dto.name = user.name;
-    dto.avatarUrl = user.avatarUrl;
+    dto.avatarUrl = profile?.avatarUrl ?? null;
     dto.phone = profile?.phone ?? null;
     dto.addressLine1 = profile?.addressLine1 ?? null;
     dto.addressLine2 = profile?.addressLine2 ?? null;
@@ -25,14 +47,14 @@ export class ProfileAssembler {
     return dto;
   }
 
-  toDtoFromAdmin(admin: Admin): ProfileResponseDto {
+  toDtoFromAdmin(admin: Admin, profile: Profile | null = null): ProfileResponseDto {
     const dto = new ProfileResponseDto();
     dto.ownerType = 'admin';
     dto.ownerId = admin.id;
     dto.email = admin.email;
     dto.name = admin.name;
-    dto.avatarUrl = admin.avatarUrl;
-    dto.phone = null;
+    dto.avatarUrl = profile?.avatarUrl ?? null;
+    dto.phone = profile?.phone ?? null;
     dto.addressLine1 = null;
     dto.addressLine2 = null;
     dto.city = null;

@@ -31,8 +31,8 @@ export class ProfileResponseDto {
   @ApiProperty({ example: '46870', nullable: true })
   postalCode: string | null;
 
-  @ApiProperty({ example: 'ES' })
-  countryCode: string;
+  @ApiProperty({ example: 'ES', nullable: true })
+  countryCode: string | null;
 
   @ApiProperty({ example: true })
   isActive: boolean;

@@ -35,6 +35,9 @@ export class ProfileOrmEntity {
   @Column({ name: 'country_code', type: 'char', length: 2, default: () => "'ES'" })
   countryCode: string;
 
+  @Column({ name: 'avatar_url', type: 'varchar', length: 500, nullable: true })
+  avatarUrl: string | null;
+
   @Column({ name: 'is_active', type: 'tinyint', width: 1, default: () => '1' })
   isActive: boolean;
 

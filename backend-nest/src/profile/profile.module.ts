@@ -8,6 +8,7 @@ import { UserAddressesController } from './presentation/controllers/user-address
 import { UserAllergensController } from './presentation/controllers/user-allergens.controller';
 import { GetProfileUseCase } from './application/use_cases/get-profile.usecase';
 import { UpdateProfileUseCase } from './application/use_cases/update-profile.usecase';
+import { UploadAvatarUseCase } from './application/use-cases/upload-avatar.use-case';
 import { CreateUserAddressUseCase } from './application/use-cases/create-user-address.use-case';
 import { GetUserAddressesUseCase } from './application/use-cases/get-user-addresses.use-case';
 import { UpdateUserAddressUseCase } from './application/use-cases/update-user-address.use-case';
@@ -23,16 +24,21 @@ import { IProfilesRepository } from './domain/repositories/profile.repository';
 import { USER_ADDRESS_REPOSITORY_TOKEN } from './domain/repositories/user-address.repository.interface';
 import { USER_ALLERGEN_REPOSITORY_TOKEN } from './domain/repositories/user-allergen.repository.interface';
 import { AuthModule } from '../auth/auth.module';
+import { MediaModule } from '../media/media.module';
+import { ProfileAssembler } from './presentation/assemblers/profile.assembler';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProfileOrmEntity, UserAddressOrmEntity, UserAllergenOrmEntity]),
     AuthModule,
+    MediaModule,
   ],
   controllers: [ProfileController, UserAddressesController, UserAllergensController],
   providers: [
     GetProfileUseCase,
     UpdateProfileUseCase,
+    UploadAvatarUseCase,
+    ProfileAssembler,
     CreateUserAddressUseCase,
     GetUserAddressesUseCase,
     UpdateUserAddressUseCase,

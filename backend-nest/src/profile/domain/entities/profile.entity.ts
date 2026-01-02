@@ -9,6 +9,7 @@ export class Profile {
   readonly city: string | null;
   readonly postalCode: string | null;
   readonly countryCode: string; // 'ES' por defecto en BD
+  readonly avatarUrl: string | null;
 
   readonly isActive: boolean;
 
@@ -25,6 +26,7 @@ export class Profile {
     city: string | null;
     postalCode: string | null;
     countryCode: string;
+    avatarUrl: string | null;
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -39,6 +41,7 @@ export class Profile {
     this.city = props.city ?? null;
     this.postalCode = props.postalCode ?? null;
     this.countryCode = props.countryCode;
+    this.avatarUrl = props.avatarUrl ?? null;
 
     this.isActive = props.isActive;
     
@@ -56,6 +59,7 @@ export class Profile {
     city: string | null;
     postalCode: string | null;
     countryCode: string;
+    avatarUrl: string | null;
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;

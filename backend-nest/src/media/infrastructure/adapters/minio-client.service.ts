@@ -8,6 +8,8 @@ export class MinioClientService {
   private readonly buckets = {
     products: 'products',
     menus: 'menus',
+    userAvatars: 'user-avatars',
+    adminAvatars: 'admin-avatars',
   };
   private readonly logger = new Logger(MinioClientService.name);
 
@@ -60,9 +62,23 @@ export class MinioClientService {
    */
   async uploadFile(
     file: Express.Multer.File,
-    type: 'product' | 'menu',
+    type: 'product' | 'menu' | 'user-avatar' | 'admin-avatar',
   ): Promise<{ slug: string; fileName: string; path: string }> {
-    const bucket = this.buckets[`${type}s`];
+    let bucket: string;
+    
+    // Mapear tipo a bucket
+    if (type === 'product') {
+      bucket = this.buckets.products;
+    } else if (type === 'menu') {
+      bucket = this.buckets.menus;
+    } else if (type === 'user-avatar') {
+      bucket = this.buckets.userAvatars;
+    } else if (type === 'admin-avatar') {
+      bucket = this.buckets.adminAvatars;
+    } else {
+      bucket = this.buckets.products;
+    }
+    
     const timestamp = Date.now();
     const sanitizedName = file.originalname.replace(/\s+/g, '-').toLowerCase();
     const fileName = `${timestamp}-${sanitizedName}`;

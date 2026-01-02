@@ -49,6 +49,7 @@ export class UpdateProfileUseCase {
         city: dto.city || null,
         postalCode: dto.postalCode || null,
         countryCode: dto.countryCode || 'ES',
+        avatarUrl: null,
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -66,6 +67,7 @@ export class UpdateProfileUseCase {
         city: dto.city !== undefined ? dto.city : profile.city,
         postalCode: dto.postalCode !== undefined ? dto.postalCode : profile.postalCode,
         countryCode: dto.countryCode !== undefined ? dto.countryCode : profile.countryCode,
+        avatarUrl: profile.avatarUrl, // Mantener el avatar actual
         isActive: profile.isActive,
         createdAt: profile.createdAt,
         updatedAt: new Date(),

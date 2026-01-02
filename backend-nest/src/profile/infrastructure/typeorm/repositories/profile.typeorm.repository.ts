@@ -49,6 +49,7 @@ export class ProfilesTypeOrmRepository implements IProfilesRepository {
       city: orm.city,
       postalCode: orm.postalCode,
       countryCode: orm.countryCode,
+      avatarUrl: orm.avatarUrl,
       isActive: orm.isActive,
       createdAt: orm.createdAt,
       updatedAt: orm.updatedAt,
@@ -66,6 +67,7 @@ export class ProfilesTypeOrmRepository implements IProfilesRepository {
     orm.city = domain.city;
     orm.postalCode = domain.postalCode;
     orm.countryCode = domain.countryCode;
+    orm.avatarUrl = domain.avatarUrl;
     orm.isActive = domain.isActive;
     orm.createdAt = domain.createdAt;
     orm.updatedAt = domain.updatedAt;
