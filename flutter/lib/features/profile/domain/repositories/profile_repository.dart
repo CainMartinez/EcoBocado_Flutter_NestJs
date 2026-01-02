@@ -13,6 +13,8 @@ abstract class ProfileRepository {
     String? avatarUrl,
   });
   
+  Future<Profile> uploadAvatar(String filePath);
+  
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,

@@ -27,6 +27,8 @@ class ProfileUseCases {
         avatarUrl: avatarUrl,
       );
 
+  Future<Profile> uploadAvatar(String filePath) => _repository.uploadAvatar(filePath);
+
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,

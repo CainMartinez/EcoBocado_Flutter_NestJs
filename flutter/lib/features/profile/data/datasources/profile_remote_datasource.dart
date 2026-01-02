@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:eco_bocado/core/utils/app_services.dart';
 import 'package:eco_bocado/core/utils/constants.dart';
 
@@ -33,6 +34,24 @@ class ProfileRemoteDataSource {
     if (avatarUrl != null) body['avatarUrl'] = avatarUrl;
 
     final response = await AppServices.dio.patch('/profile/update', data: body);
+    return response.data as Map<String, dynamic>;
+  }
+
+  /// POST /api/profile/avatar
+  /// Sube una foto de perfil
+  Future<Map<String, dynamic>> uploadAvatar(String filePath) async {
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        filePath,
+        filename: filePath.split('/').last,
+      ),
+    });
+
+    final response = await AppServices.dio.post(
+      '/profile/avatar',
+      data: formData,
+    );
+    
     return response.data as Map<String, dynamic>;
   }
 

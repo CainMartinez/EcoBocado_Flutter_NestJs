@@ -5,6 +5,7 @@ import 'package:eco_bocado/core/l10n/app_localizations.dart';
 import 'package:eco_bocado/core/layout/widgets/app_navigation_bar.dart';
 import 'package:eco_bocado/features/settings/presentation/pages/settings_page.dart';
 import 'package:eco_bocado/features/auth/presentation/providers/auth_provider.dart';
+import 'package:eco_bocado/features/profile/presentation/providers/profile_provider.dart';
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({
@@ -32,6 +33,7 @@ class _AppShellState extends ConsumerState<AppShell> {
     final cs = Theme.of(context).colorScheme;
 
     final authAsync = ref.watch(authProvider);
+    final profileAsync = ref.watch(profileProvider);
         
     final auth = authAsync.when(
       data: (value) => value,
@@ -42,7 +44,11 @@ class _AppShellState extends ConsumerState<AppShell> {
     final isLogged = auth?.isAuthenticated ?? false;
     final isAdmin = auth?.isAdmin ?? false;
     final displayName = auth?.displayName;
-    final avatarUrl = auth?.avatarUrl;
+    
+    // Obtener avatarUrl del profileProvider para que se actualice automáticamente
+    final avatarUrl = profileAsync.whenOrNull(
+      data: (profile) => profile.avatarUrl,
+    );
 
     final l10n = AppLocalizations.of(context)!;
 

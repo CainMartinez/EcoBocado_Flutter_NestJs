@@ -34,42 +34,61 @@ class Profile extends Equatable {
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
-    // Convertir postalCode a String sin importar si viene como int o String
-    String? postalCode;
-    if (json['postalCode'] != null) {
-      postalCode = json['postalCode'].toString();
-    }
-
-    // Convertir isActive de int (1/0) a bool
-    bool isActive = true;
-    if (json['isActive'] != null) {
-      if (json['isActive'] is bool) {
-        isActive = json['isActive'] as bool;
-      } else if (json['isActive'] is int) {
-        isActive = json['isActive'] == 1;
+    try {
+      
+      // Convertir postalCode a String sin importar si viene como int o String
+      String? postalCode;
+      if (json['postalCode'] != null) {
+        postalCode = json['postalCode'].toString();
       }
-    }
 
-    return Profile(
-      ownerType: json['ownerType'] as String,
-      ownerId: json['ownerId'] as int,
-      email: json['email'] as String,
-      name: json['name'] as String,
-      avatarUrl: json['avatarUrl'] as String?,
-      phone: json['phone'] as String?,
-      addressLine1: json['addressLine1'] as String?,
-      addressLine2: json['addressLine2'] as String?,
-      city: json['city'] as String?,
-      postalCode: postalCode,
-      countryCode: json['countryCode'] as String?,
-      isActive: isActive,
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'] as String)
-          : null,
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
-          : null,
-    );
+      // Convertir isActive de int (1/0) a bool
+      bool isActive = true;
+      if (json['isActive'] != null) {
+        if (json['isActive'] is bool) {
+          isActive = json['isActive'] as bool;
+        } else if (json['isActive'] is int) {
+          isActive = json['isActive'] == 1;
+        }
+      }
+
+      // Campos required con validación
+      final ownerType = json['ownerType']?.toString() ?? '';
+      final ownerId = json['ownerId'] is int ? json['ownerId'] as int : int.tryParse(json['ownerId']?.toString() ?? '0') ?? 0;
+      final email = json['email']?.toString() ?? '';
+      final name = json['name']?.toString() ?? '';
+
+      // Campos opcionales de tipo String con conversión segura
+      final avatarUrl = json['avatarUrl']?.toString();
+      final phone = json['phone']?.toString();
+      final addressLine1 = json['addressLine1']?.toString();
+      final addressLine2 = json['addressLine2']?.toString();
+      final city = json['city']?.toString();
+      final countryCode = json['countryCode']?.toString();
+
+      return Profile(
+        ownerType: ownerType,
+        ownerId: ownerId,
+        email: email,
+        name: name,
+        avatarUrl: avatarUrl,
+        phone: phone,
+        addressLine1: addressLine1,
+        addressLine2: addressLine2,
+        city: city,
+        postalCode: postalCode,
+        countryCode: countryCode,
+        isActive: isActive,
+        createdAt: json['createdAt'] != null && json['createdAt'] is String
+            ? DateTime.parse(json['createdAt'] as String)
+            : null,
+        updatedAt: json['updatedAt'] != null && json['updatedAt'] is String
+            ? DateTime.parse(json['updatedAt'] as String)
+            : null,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Profile copyWith({

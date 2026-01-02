@@ -93,6 +93,18 @@ class ProfileNotifier extends AsyncNotifier<Profile> {
     }
   }
 
+  /// Sube una foto de perfil
+  Future<void> uploadAvatar(String filePath) async {
+    try {
+      final useCases = ref.read(profileUseCasesProvider);
+      final profile = await useCases.uploadAvatar(filePath);
+      state = AsyncValue.data(profile);
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      rethrow;
+    }
+  }
+
   /// Cambia la contraseña del usuario
   Future<void> changePassword({
     required String currentPassword,

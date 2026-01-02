@@ -5,7 +5,7 @@ import 'package:eco_bocado/core/l10n/app_localizations.dart';
 import 'package:eco_bocado/features/profile/presentation/providers/profile_provider.dart';
 import 'package:eco_bocado/features/profile/presentation/pages/update_profile_page.dart';
 import 'package:eco_bocado/features/profile/presentation/pages/change_password_page.dart';
-import 'package:eco_bocado/features/profile/presentation/widgets/profile_avatar.dart';
+import 'package:eco_bocado/features/profile/presentation/widgets/editable_profile_avatar.dart';
 import 'package:eco_bocado/features/profile/presentation/widgets/profile_role_badge.dart';
 import 'package:eco_bocado/features/profile/presentation/widgets/profile_info_row.dart';
 import 'package:eco_bocado/features/profile/presentation/widgets/user_allergens_section.dart';
@@ -42,9 +42,9 @@ class ProfilePage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Avatar grande
+                // Avatar grande con botón de edición
                 Center(
-                  child: ProfileAvatar(
+                  child: EditableProfileAvatar(
                     avatarUrl: profile.avatarUrl,
                     name: profile.name,
                     radius: 60,

@@ -39,6 +39,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
+  Future<Profile> uploadAvatar(String filePath) async {
+    final data = await _remoteDataSource.uploadAvatar(filePath);
+    return Profile.fromJson(data);
+  }
+
+  @override
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,
