@@ -8,6 +8,7 @@ import type { IUserAddressRepository } from '../../../profile/domain/repositorie
 import { CreateOrderRequestDto } from '../dto/request/create-order.request.dto';
 import { OrderResponseDto } from '../dto/response/order.response.dto';
 import { OrderItemResponseDto } from '../dto/response/order-item.response.dto';
+import { CreateInvoiceForOrderUseCase } from '../../../billing/application/use_cases/create-invoice-for-order.usecase';
 
 @Injectable()
 export class CreateOrderUseCase {
@@ -20,6 +21,7 @@ export class CreateOrderUseCase {
     private readonly deliveryRepository: IDeliveryRepository,
     @Inject(USER_ADDRESS_REPOSITORY_TOKEN)
     private readonly userAddressRepository: IUserAddressRepository,
+    private readonly createInvoiceForOrderUseCase: CreateInvoiceForOrderUseCase,
   ) {}
 
   async execute(userId: number, dto: CreateOrderRequestDto): Promise<OrderResponseDto> {
@@ -111,6 +113,20 @@ export class CreateOrderUseCase {
       }
 
       await this.deliveryRepository.create(deliveryData);
+    }
+
+    // Crear factura automáticamente para el pedido completado
+    if (order.status === 'confirmed' || order.status === 'delivered') {
+      try {
+        await this.createInvoiceForOrderUseCase.execute(
+          order.id,
+          userId,
+          parseFloat(order.total.toString()),
+        );
+      } catch (error) {
+        console.error('Error creating invoice for order:', error);
+        // No lanzamos error para no bloquear la creación del pedido
+      }
     }
 
     return this.toResponseDto(order, items);

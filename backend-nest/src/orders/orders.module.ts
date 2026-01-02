@@ -12,6 +12,7 @@ import { OrdersController } from './presentation/controllers/orders.controller';
 import { PaymentModule } from '../payment/payment.module';
 import { DeliveryModule } from '../delivery/delivery.module';
 import { ProfileModule } from '../profile/profile.module';
+import { BillingModule } from '../billing/billing.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ProfileModule } from '../profile/profile.module';
     PaymentModule,
     DeliveryModule,
     ProfileModule,
+    BillingModule,
   ],
   controllers: [OrdersController],
   providers: [
