@@ -80,9 +80,11 @@ class ProfilePage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 24),
 
-                // 🌟 SECCIÓN DESTACADA DE ALÉRGENOS - VALOR AÑADIDO DE LA APP 🌟
-                const UserAllergensSection(),
-                const SizedBox(height: 24),
+                // 🌟 SECCIÓN DESTACADA DE ALÉRGENOS - Solo para usuarios (no admins)
+                if (!profile.isAdmin) ...[  
+                  const UserAllergensSection(),
+                  const SizedBox(height: 24),
+                ],
 
                 // Sección de información
                 Card(
