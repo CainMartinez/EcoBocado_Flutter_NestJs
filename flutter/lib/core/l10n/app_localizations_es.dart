@@ -287,7 +287,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get isVegan => 'Es vegano';
 
   @override
-  String get category => 'Categoría *';
+  String get category => 'Categoría';
 
   @override
   String get required => 'Requerido';
@@ -390,7 +390,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hello => 'Hola';
 
   @override
-  String get dashboard => 'Dashboard';
+  String get dashboard => 'Panel de Control';
 
   @override
   String get products => 'Productos';
@@ -646,4 +646,51 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorRegisterFailed => 'Error en el registro';
+
+  @override
+  String get clearFilter => 'Limpiar filtro';
+
+  @override
+  String get noProductsInCategory => 'No hay productos en esta categoría';
+
+  @override
+  String get tryAnotherCategory => 'Prueba con otra categoría';
+
+  @override
+  String get loadingCategories => 'Cargando categorías...';
+
+  @override
+  String get searchProducts => 'Buscar productos...';
+
+  @override
+  String get overview => 'Resumen General';
+
+  @override
+  String get totalOrders => 'Pedidos Totales';
+
+  @override
+  String get revenue => 'Ingresos';
+
+  @override
+  String get users => 'Usuarios';
+
+  @override
+  String get recentOrders => 'Pedidos Recientes';
+
+  @override
+  String get noRecentOrders => 'No hay pedidos recientes';
+
+  @override
+  String get ordersWillAppearHere =>
+      'Los pedidos aparecerán aquí cuando los clientes hagan compras';
+
+  @override
+  String get topProducts => 'Productos Más Vendidos';
+
+  @override
+  String get noSalesData => 'No hay datos de ventas';
+
+  @override
+  String get salesDataWillAppearHere =>
+      'Los datos de ventas aparecerán aquí cuando se realicen compras';
 }

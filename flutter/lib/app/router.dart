@@ -7,6 +7,7 @@ import 'package:eco_bocado/features/home/presentation/pages/home_page.dart';
 import 'package:eco_bocado/features/profile/presentation/pages/profile_page.dart';
 import 'package:eco_bocado/features/profile/presentation/pages/user_addresses_management_page.dart';
 import 'package:eco_bocado/features/shop/presentation/pages/shop_page.dart';
+import 'package:eco_bocado/features/admin/presentation/pages/dashboard_admin_page.dart';
 import 'package:eco_bocado/features/admin/presentation/pages/products_admin_page.dart';
 import 'package:eco_bocado/features/orders/presentation/screens/orders_screen.dart';
 import 'package:eco_bocado/features/orders/presentation/pages/delivery_method_selection_page.dart';
@@ -61,7 +62,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => const NoTransitionPage(
               child: AuthGate(
                 authPageKey: ValueKey('dashboard-auth'),
-                child: Center(child: Text('Dashboard - Datos globales de la aplicación')),
+                child: DashboardAdminPage(),
               ),
             ),
           ),

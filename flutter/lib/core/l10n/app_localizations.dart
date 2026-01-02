@@ -632,10 +632,10 @@ abstract class AppLocalizations {
   /// **'Es vegano'**
   String get isVegan;
 
-  /// Label para categoría
+  /// Etiqueta de categoría
   ///
   /// In es, this message translates to:
-  /// **'Categoría *'**
+  /// **'Categoría'**
   String get category;
 
   /// Mensaje de validación campo requerido
@@ -830,10 +830,10 @@ abstract class AppLocalizations {
   /// **'Hola'**
   String get hello;
 
-  /// Navegación dashboard
+  /// Panel de control del administrador
   ///
   /// In es, this message translates to:
-  /// **'Dashboard'**
+  /// **'Panel de Control'**
   String get dashboard;
 
   /// Navegación productos
@@ -1315,6 +1315,96 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error en el registro'**
   String get errorRegisterFailed;
+
+  /// Limpiar filtro activo
+  ///
+  /// In es, this message translates to:
+  /// **'Limpiar filtro'**
+  String get clearFilter;
+
+  /// No hay productos en la categoría seleccionada
+  ///
+  /// In es, this message translates to:
+  /// **'No hay productos en esta categoría'**
+  String get noProductsInCategory;
+
+  /// Sugerencia para cambiar de categoría
+  ///
+  /// In es, this message translates to:
+  /// **'Prueba con otra categoría'**
+  String get tryAnotherCategory;
+
+  /// Cargando lista de categorías
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando categorías...'**
+  String get loadingCategories;
+
+  /// Placeholder para buscar productos
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar productos...'**
+  String get searchProducts;
+
+  /// Resumen general
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen General'**
+  String get overview;
+
+  /// Pedidos totales
+  ///
+  /// In es, this message translates to:
+  /// **'Pedidos Totales'**
+  String get totalOrders;
+
+  /// Ingresos totales
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresos'**
+  String get revenue;
+
+  /// Total de usuarios
+  ///
+  /// In es, this message translates to:
+  /// **'Usuarios'**
+  String get users;
+
+  /// Pedidos recientes
+  ///
+  /// In es, this message translates to:
+  /// **'Pedidos Recientes'**
+  String get recentOrders;
+
+  /// No hay pedidos recientes
+  ///
+  /// In es, this message translates to:
+  /// **'No hay pedidos recientes'**
+  String get noRecentOrders;
+
+  /// Mensaje de pedidos vacíos
+  ///
+  /// In es, this message translates to:
+  /// **'Los pedidos aparecerán aquí cuando los clientes hagan compras'**
+  String get ordersWillAppearHere;
+
+  /// Productos más vendidos
+  ///
+  /// In es, this message translates to:
+  /// **'Productos Más Vendidos'**
+  String get topProducts;
+
+  /// No hay datos de ventas
+  ///
+  /// In es, this message translates to:
+  /// **'No hay datos de ventas'**
+  String get noSalesData;
+
+  /// Mensaje de datos de ventas vacíos
+  ///
+  /// In es, this message translates to:
+  /// **'Los datos de ventas aparecerán aquí cuando se realicen compras'**
+  String get salesDataWillAppearHere;
 }
 
 class _AppLocalizationsDelegate

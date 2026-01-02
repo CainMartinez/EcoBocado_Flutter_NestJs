@@ -288,7 +288,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get isVegan => 'Is vegan';
 
   @override
-  String get category => 'Category *';
+  String get category => 'Category';
 
   @override
   String get required => 'Required';
@@ -642,4 +642,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorRegisterFailed => 'Registration error';
+
+  @override
+  String get clearFilter => 'Clear filter';
+
+  @override
+  String get noProductsInCategory => 'No products in this category';
+
+  @override
+  String get tryAnotherCategory => 'Try another category';
+
+  @override
+  String get loadingCategories => 'Loading categories...';
+
+  @override
+  String get searchProducts => 'Search products...';
+
+  @override
+  String get overview => 'Overview';
+
+  @override
+  String get totalOrders => 'Total Orders';
+
+  @override
+  String get revenue => 'Revenue';
+
+  @override
+  String get users => 'Users';
+
+  @override
+  String get recentOrders => 'Recent Orders';
+
+  @override
+  String get noRecentOrders => 'No recent orders';
+
+  @override
+  String get ordersWillAppearHere =>
+      'Orders will appear here when customers make purchases';
+
+  @override
+  String get topProducts => 'Top Products';
+
+  @override
+  String get noSalesData => 'No sales data';
+
+  @override
+  String get salesDataWillAppearHere =>
+      'Sales data will appear here when purchases are made';
 }

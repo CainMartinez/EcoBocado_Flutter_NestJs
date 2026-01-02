@@ -860,5 +860,73 @@
   "errorRegisterFailed": "Error en el registro",
   "@errorRegisterFailed": {
     "description": "Error registro fallido"
+  },
+  "clearFilter": "Limpiar filtro",
+  "@clearFilter": {
+    "description": "Limpiar filtro activo"
+  },
+  "noProductsInCategory": "No hay productos en esta categoría",
+  "@noProductsInCategory": {
+    "description": "No hay productos en la categoría seleccionada"
+  },
+  "tryAnotherCategory": "Prueba con otra categoría",
+  "@tryAnotherCategory": {
+    "description": "Sugerencia para cambiar de categoría"
+  },
+  "loadingCategories": "Cargando categorías...",
+  "@loadingCategories": {
+    "description": "Cargando lista de categorías"
+  },
+  "category": "Categoría",
+  "@category": {
+    "description": "Etiqueta de categoría"
+  },
+  "searchProducts": "Buscar productos...",
+  "@searchProducts": {
+    "description": "Placeholder para buscar productos"
+  },
+  "dashboard": "Panel de Control",
+  "@dashboard": {
+    "description": "Panel de control del administrador"
+  },
+  "overview": "Resumen General",
+  "@overview": {
+    "description": "Resumen general"
+  },
+  "totalOrders": "Pedidos Totales",
+  "@totalOrders": {
+    "description": "Pedidos totales"
+  },
+  "revenue": "Ingresos",
+  "@revenue": {
+    "description": "Ingresos totales"
+  },
+  "users": "Usuarios",
+  "@users": {
+    "description": "Total de usuarios"
+  },
+  "recentOrders": "Pedidos Recientes",
+  "@recentOrders": {
+    "description": "Pedidos recientes"
+  },
+  "noRecentOrders": "No hay pedidos recientes",
+  "@noRecentOrders": {
+    "description": "No hay pedidos recientes"
+  },
+  "ordersWillAppearHere": "Los pedidos aparecerán aquí cuando los clientes hagan compras",
+  "@ordersWillAppearHere": {
+    "description": "Mensaje de pedidos vacíos"
+  },
+  "topProducts": "Productos Más Vendidos",
+  "@topProducts": {
+    "description": "Productos más vendidos"
+  },
+  "noSalesData": "No hay datos de ventas",
+  "@noSalesData": {
+    "description": "No hay datos de ventas"
+  },
+  "salesDataWillAppearHere": "Los datos de ventas aparecerán aquí cuando se realicen compras",
+  "@salesDataWillAppearHere": {
+    "description": "Mensaje de datos de ventas vacíos"
   }
 }

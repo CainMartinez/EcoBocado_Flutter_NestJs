@@ -860,5 +860,73 @@
   "errorRegisterFailed": "Registration error",
   "@errorRegisterFailed": {
     "description": "Register failed error"
+  },
+  "clearFilter": "Clear filter",
+  "@clearFilter": {
+    "description": "Clear active filter"
+  },
+  "noProductsInCategory": "No products in this category",
+  "@noProductsInCategory": {
+    "description": "No products in selected category"
+  },
+  "tryAnotherCategory": "Try another category",
+  "@tryAnotherCategory": {
+    "description": "Suggestion to change category"
+  },
+  "loadingCategories": "Loading categories...",
+  "@loadingCategories": {
+    "description": "Loading categories list"
+  },
+  "category": "Category",
+  "@category": {
+    "description": "Category label"
+  },
+  "searchProducts": "Search products...",
+  "@searchProducts": {
+    "description": "Placeholder for search products"
+  },
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Admin dashboard"
+  },
+  "overview": "Overview",
+  "@overview": {
+    "description": "General overview"
+  },
+  "totalOrders": "Total Orders",
+  "@totalOrders": {
+    "description": "Total orders"
+  },
+  "revenue": "Revenue",
+  "@revenue": {
+    "description": "Total revenue"
+  },
+  "users": "Users",
+  "@users": {
+    "description": "Total users"
+  },
+  "recentOrders": "Recent Orders",
+  "@recentOrders": {
+    "description": "Recent orders"
+  },
+  "noRecentOrders": "No recent orders",
+  "@noRecentOrders": {
+    "description": "No recent orders"
+  },
+  "ordersWillAppearHere": "Orders will appear here when customers make purchases",
+  "@ordersWillAppearHere": {
+    "description": "Empty orders message"
+  },
+  "topProducts": "Top Products",
+  "@topProducts": {
+    "description": "Top selling products"
+  },
+  "noSalesData": "No sales data",
+  "@noSalesData": {
+    "description": "No sales data"
+  },
+  "salesDataWillAppearHere": "Sales data will appear here when purchases are made",
+  "@salesDataWillAppearHere": {
+    "description": "Empty sales data message"
   }
 }
