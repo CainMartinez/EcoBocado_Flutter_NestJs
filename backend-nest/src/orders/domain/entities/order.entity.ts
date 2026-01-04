@@ -1,4 +1,4 @@
-export type OrderStatus = 'draft' | 'pending_payment' | 'confirmed' | 'prepared' | 'delivered' | 'cancelled';
+export type OrderStatus = 'draft' | 'pending_payment' | 'confirmed' | 'prepared' | 'delivered' | 'cancelled' | 'completed';
 export type DeliveryType = 'pickup' | 'delivery';
 
 export class Order {

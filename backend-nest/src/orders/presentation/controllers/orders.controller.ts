@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
   Param,
   Body,
   UseGuards,
@@ -19,10 +20,12 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
 import { CreateOrderRequestDto } from '../../application/dto/request/create-order.request.dto';
+import { UpdateOrderStatusRequestDto } from '../../application/dto/request/update-order-status.request.dto';
 import { OrderResponseDto } from '../../application/dto/response/order.response.dto';
 import { CreateOrderUseCase } from '../../application/use_cases/create-order.use-case';
 import { GetOrderByIdUseCase } from '../../application/use_cases/get-order-by-id.use-case';
 import { GetUserOrdersUseCase } from '../../application/use_cases/get-user-orders.use-case';
+import { UpdateOrderStatusUseCase } from '../../application/use_cases/update-order-status.use-case';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -33,6 +36,7 @@ export class OrdersController {
     private readonly createOrderUseCase: CreateOrderUseCase,
     private readonly getOrderByIdUseCase: GetOrderByIdUseCase,
     private readonly getUserOrdersUseCase: GetUserOrdersUseCase,
+    private readonly updateOrderStatusUseCase: UpdateOrderStatusUseCase,
   ) {}
 
   @Post()
@@ -84,5 +88,27 @@ export class OrdersController {
   @ApiResponse({ status: 404, description: 'Pedido no encontrado' })
   async getOrderById(@Param('id', ParseIntPipe) id: number): Promise<OrderResponseDto> {
     return await this.getOrderByIdUseCase.execute(id);
+  }
+
+  @Patch(':id/status')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: 'Actualizar el estado de un pedido',
+    description: 'Actualiza el estado de un pedido existente',
+  })
+  @ApiParam({ name: 'id', description: 'ID del pedido', type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Estado actualizado exitosamente',
+  })
+  @ApiResponse({ status: 400, description: 'Estado inválido o transición no permitida' })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  @ApiResponse({ status: 404, description: 'Pedido no encontrado' })
+  async updateOrderStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateOrderStatusRequestDto,
+  ): Promise<{ message: string }> {
+    await this.updateOrderStatusUseCase.execute(id, dto.status);
+    return { message: 'Estado actualizado correctamente' };
   }
 }
