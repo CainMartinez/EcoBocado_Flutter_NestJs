@@ -59,7 +59,11 @@ export class TypeOrmDeliveryRepository implements IDeliveryRepository {
       country: saved.country,
       phone: saved.phone,
       deliveryNotes: saved.deliveryNotes,
-      estimatedDeliveryDate: saved.estimatedDeliveryDate?.toISOString().split('T')[0] ?? null,
+      estimatedDeliveryDate: saved.estimatedDeliveryDate 
+        ? (saved.estimatedDeliveryDate instanceof Date 
+            ? saved.estimatedDeliveryDate.toISOString().split('T')[0] 
+            : String(saved.estimatedDeliveryDate).split('T')[0])
+        : null,
       estimatedDeliveryTime: saved.estimatedDeliveryTimeStart ?? null,
       actualDeliveryAt: null,
       deliveryStatus: saved.deliveryStatus as any,
@@ -89,7 +93,11 @@ export class TypeOrmDeliveryRepository implements IDeliveryRepository {
       country: deliveryOrm.country,
       phone: deliveryOrm.phone,
       deliveryNotes: deliveryOrm.deliveryNotes,
-      estimatedDeliveryDate: deliveryOrm.estimatedDeliveryDate?.toISOString().split('T')[0] ?? null,
+      estimatedDeliveryDate: deliveryOrm.estimatedDeliveryDate 
+        ? (deliveryOrm.estimatedDeliveryDate instanceof Date 
+            ? deliveryOrm.estimatedDeliveryDate.toISOString().split('T')[0] 
+            : String(deliveryOrm.estimatedDeliveryDate).split('T')[0])
+        : null,
       estimatedDeliveryTime: deliveryOrm.estimatedDeliveryTimeStart ?? null,
       actualDeliveryAt: null,
       deliveryStatus: deliveryOrm.deliveryStatus as any,
@@ -133,7 +141,11 @@ export class TypeOrmDeliveryRepository implements IDeliveryRepository {
         country: d.country,
         phone: d.phone,
         deliveryNotes: d.deliveryNotes,
-        estimatedDeliveryDate: d.estimatedDeliveryDate?.toISOString().split('T')[0] ?? null,
+        estimatedDeliveryDate: d.estimatedDeliveryDate 
+          ? (d.estimatedDeliveryDate instanceof Date 
+              ? d.estimatedDeliveryDate.toISOString().split('T')[0] 
+              : String(d.estimatedDeliveryDate).split('T')[0])
+          : null,
         estimatedDeliveryTime: d.estimatedDeliveryTimeStart ?? null,
         actualDeliveryAt: null,
         deliveryStatus: d.deliveryStatus as any,

@@ -58,6 +58,18 @@ export class OrderResponseDto {
   })
   items: OrderItemResponseDto[];
 
+  @ApiPropertyOptional({
+    description: 'Información de entrega (solo si deliveryType es "delivery")',
+    nullable: true,
+  })
+  delivery?: {
+    addressLine1: string;
+    addressLine2: string | null;
+    city: string;
+    postalCode: string;
+    phone: string | null;
+  } | null;
+
   @ApiProperty({ description: 'Fecha de creación del pedido' })
   createdAt: Date;
 
