@@ -22,10 +22,12 @@ import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
 import { CreateOrderRequestDto } from '../../application/dto/request/create-order.request.dto';
 import { UpdateOrderStatusRequestDto } from '../../application/dto/request/update-order-status.request.dto';
 import { OrderResponseDto } from '../../application/dto/response/order.response.dto';
+import { DeliveryStatsResponseDto } from '../../application/dto/response/delivery-stats.response.dto';
 import { CreateOrderUseCase } from '../../application/use_cases/create-order.use-case';
 import { GetOrderByIdUseCase } from '../../application/use_cases/get-order-by-id.use-case';
 import { GetUserOrdersUseCase } from '../../application/use_cases/get-user-orders.use-case';
 import { UpdateOrderStatusUseCase } from '../../application/use_cases/update-order-status.use-case';
+import { GetDeliveryStatsUseCase } from '../../application/use_cases/get-delivery-stats.use-case';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -37,6 +39,7 @@ export class OrdersController {
     private readonly getOrderByIdUseCase: GetOrderByIdUseCase,
     private readonly getUserOrdersUseCase: GetUserOrdersUseCase,
     private readonly updateOrderStatusUseCase: UpdateOrderStatusUseCase,
+    private readonly getDeliveryStatsUseCase: GetDeliveryStatsUseCase,
   ) {}
 
   @Post()
@@ -71,6 +74,22 @@ export class OrdersController {
   async getUserOrders(@Req() req: any): Promise<OrderResponseDto[]> {
     const userId = Number(req.user.sub);
     return await this.getUserOrdersUseCase.execute(userId);
+  }
+
+  @Get('stats/delivery')
+  @ApiOperation({ 
+    summary: 'Obtener estadísticas de entregas',
+    description: 'Obtiene estadísticas de pedidos y entregas del usuario autenticado',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Estadísticas recuperadas exitosamente',
+    type: DeliveryStatsResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  async getDeliveryStats(@Req() req: any): Promise<DeliveryStatsResponseDto> {
+    const userId = Number(req.user.sub);
+    return await this.getDeliveryStatsUseCase.execute(userId);
   }
 
   @Get(':id')
