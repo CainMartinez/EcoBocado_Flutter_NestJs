@@ -9,7 +9,7 @@ export class UpdateOrderStatusUseCase {
     private readonly orderRepository: OrderRepo.IOrderRepository,
   ) {}
 
-  async execute(orderId: number, newStatus: OrderStatus): Promise<void> {
+  async execute(orderId: number, newStatus: OrderStatus, driverId?: number): Promise<void> {
     // Validar que el estado es válido
     const validStatuses: OrderStatus[] = [
       'draft',
@@ -52,7 +52,12 @@ export class UpdateOrderStatusUseCase {
       );
     }
 
-    // Actualizar el estado
-    await this.orderRepository.updateStatus(orderId, newStatus);
+    // Si el estado cambia a "delivered" y se proporciona un driverId, actualizar ambos
+    if (newStatus === 'delivered' && driverId) {
+      await this.orderRepository.updateStatusAndDriver(orderId, newStatus, driverId);
+    } else {
+      // Actualizar solo el estado
+      await this.orderRepository.updateStatus(orderId, newStatus);
+    }
   }
 }

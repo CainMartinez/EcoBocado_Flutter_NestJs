@@ -38,6 +38,9 @@ export class OrderOrmEntity {
   @JoinColumn({ name: 'pickup_slot_id' })
   pickupSlot: PickupSlotOrmEntity;
 
+  @Column({ name: 'driver_id', type: 'int', nullable: true })
+  driverId: number | null;
+
   @Column({ name: 'payment_intent_id', type: 'varchar', length: 255, nullable: true })
   paymentIntentId: string | null;
 

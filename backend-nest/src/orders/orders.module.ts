@@ -10,6 +10,7 @@ import { GetOrderByIdUseCase } from './application/use_cases/get-order-by-id.use
 import { GetUserOrdersUseCase } from './application/use_cases/get-user-orders.use-case';
 import { UpdateOrderStatusUseCase } from './application/use_cases/update-order-status.use-case';
 import { GetDeliveryStatsUseCase } from './application/use_cases/get-delivery-stats.use-case';
+import { GetDeliveryRankingUseCase } from './application/use-cases/get-delivery-ranking.use-case';
 import { OrdersController } from './presentation/controllers/orders.controller';
 import { PaymentModule } from '../payment/payment.module';
 import { DeliveryModule } from '../delivery/delivery.module';
@@ -34,6 +35,7 @@ import { BillingModule } from '../billing/billing.module';
     GetOrderByIdUseCase,
     GetUserOrdersUseCase,
     UpdateOrderStatusUseCase,
+    GetDeliveryRankingUseCase,
     GetDeliveryStatsUseCase,
   ],
   exports: [ORDER_REPOSITORY_TOKEN],

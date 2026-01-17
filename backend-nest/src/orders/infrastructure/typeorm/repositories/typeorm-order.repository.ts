@@ -131,6 +131,7 @@ export class TypeOrmOrderRepository implements IOrderRepository {
         deliveryType: savedOrder.deliveryType as any,
         pickupSlotId: savedOrder.pickupSlotId,
         paymentIntentId: savedOrder.paymentIntentId,
+        driverId: savedOrder.driverId,
         subtotal: savedOrder.subtotal,
         total: savedOrder.total,
         currency: savedOrder.currency,
@@ -177,6 +178,7 @@ export class TypeOrmOrderRepository implements IOrderRepository {
       deliveryType: orderOrm.deliveryType as any,
       pickupSlotId: orderOrm.pickupSlotId,
       paymentIntentId: orderOrm.paymentIntentId,
+      driverId: orderOrm.driverId,
       subtotal: orderOrm.subtotal,
       total: orderOrm.total,
       currency: orderOrm.currency,
@@ -233,6 +235,7 @@ export class TypeOrmOrderRepository implements IOrderRepository {
         deliveryType: orderOrm.deliveryType as any,
         pickupSlotId: orderOrm.pickupSlotId,
         paymentIntentId: orderOrm.paymentIntentId,
+        driverId: orderOrm.driverId,
         subtotal: orderOrm.subtotal,
         total: orderOrm.total,
         currency: orderOrm.currency,
@@ -272,5 +275,9 @@ export class TypeOrmOrderRepository implements IOrderRepository {
 
   async updateStatus(orderId: number, status: string): Promise<void> {
     await this.orderRepo.update({ id: orderId }, { status });
+  }
+
+  async updateStatusAndDriver(orderId: number, status: string, driverId: number): Promise<void> {
+    await this.orderRepo.update({ id: orderId }, { status, driverId });
   }
 }

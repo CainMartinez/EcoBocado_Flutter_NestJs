@@ -39,6 +39,11 @@ export interface IOrderRepository {
    * Actualiza el estado de una orden
    */
   updateStatus(orderId: number, status: string): Promise<void>;
+
+  /**
+   * Actualiza el estado y el repartidor de una orden
+   */
+  updateStatusAndDriver(orderId: number, status: string, driverId: number): Promise<void>;
 }
 
 export const ORDER_REPOSITORY_TOKEN = Symbol('ORDER_REPOSITORY_TOKEN');

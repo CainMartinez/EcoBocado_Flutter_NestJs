@@ -11,6 +11,7 @@ export class Order {
 
   readonly pickupSlotId: number | null;
   readonly paymentIntentId: string | null;
+  readonly driverId: number | null;
 
   readonly subtotal: number;
   readonly total: number;
@@ -31,6 +32,7 @@ export class Order {
     deliveryType: DeliveryType;
     pickupSlotId: number | null;
     paymentIntentId: string | null;
+    driverId: number | null;
     subtotal: number;
     total: number;
     currency: string;
@@ -48,6 +50,7 @@ export class Order {
 
     this.pickupSlotId = props.pickupSlotId ?? null;
     this.paymentIntentId = props.paymentIntentId ?? null;
+    this.driverId = props.driverId ?? null;
 
     this.subtotal = props.subtotal;
     this.total = props.total;
@@ -69,6 +72,7 @@ export class Order {
     deliveryType: DeliveryType;
     pickupSlotId: number | null;
     paymentIntentId: string | null;
+    driverId: number | null;
     subtotal: number;
     total: number;
     currency: string;
@@ -85,6 +89,7 @@ export class Order {
       deliveryType: p.deliveryType,
       pickupSlotId: p.pickupSlotId ?? null,
       paymentIntentId: p.paymentIntentId ?? null,
+      driverId: p.driverId ?? null,
       subtotal: p.subtotal,
       total: p.total,
       currency: p.currency,

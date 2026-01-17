@@ -23,11 +23,16 @@ import { CreateOrderRequestDto } from '../../application/dto/request/create-orde
 import { UpdateOrderStatusRequestDto } from '../../application/dto/request/update-order-status.request.dto';
 import { OrderResponseDto } from '../../application/dto/response/order.response.dto';
 import { DeliveryStatsResponseDto } from '../../application/dto/response/delivery-stats.response.dto';
+import { RankingResponseDto } from '../dto/response/ranking.response.dto';
 import { CreateOrderUseCase } from '../../application/use_cases/create-order.use-case';
 import { GetOrderByIdUseCase } from '../../application/use_cases/get-order-by-id.use-case';
 import { GetUserOrdersUseCase } from '../../application/use_cases/get-user-orders.use-case';
 import { UpdateOrderStatusUseCase } from '../../application/use_cases/update-order-status.use-case';
 import { GetDeliveryStatsUseCase } from '../../application/use_cases/get-delivery-stats.use-case';
+import { GetDeliveryRankingUseCase } from '../../application/use-cases/get-delivery-ranking.use-case';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { OrderOrmEntity } from '../../infrastructure/typeorm/entities-orm/order.orm-entity';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -38,8 +43,11 @@ export class OrdersController {
     private readonly createOrderUseCase: CreateOrderUseCase,
     private readonly getOrderByIdUseCase: GetOrderByIdUseCase,
     private readonly getUserOrdersUseCase: GetUserOrdersUseCase,
+    @InjectRepository(OrderOrmEntity)
+    private readonly orderRepository: Repository<OrderOrmEntity>,
     private readonly updateOrderStatusUseCase: UpdateOrderStatusUseCase,
     private readonly getDeliveryStatsUseCase: GetDeliveryStatsUseCase,
+    private readonly getDeliveryRankingUseCase: GetDeliveryRankingUseCase,
   ) {}
 
   @Post()
@@ -126,8 +134,63 @@ export class OrdersController {
   async updateOrderStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateOrderStatusRequestDto,
+    @Req() req: any,
   ): Promise<{ message: string }> {
-    await this.updateOrderStatusUseCase.execute(id, dto.status);
+    // Si el estado es "delivered", pasar el ID del usuario autenticado como driverId
+    const driverId = dto.status === 'delivered' ? Number(req.user?.sub) : undefined;
+    await this.updateOrderStatusUseCase.execute(id, dto.status, driverId);
     return { message: 'Estado actualizado correctamente' };
+  }
+
+  @Get('ranking/delivery')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: 'Obtener ranking de repartidores',
+    description: 'Obtiene el ranking mensual de repartidores basado en pedidos completados. Solo el usuario actual verá su nombre, los demás aparecen anónimos.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Ranking recuperado exitosamente',
+    type: RankingResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  async getDeliveryRanking(@Req() req: any): Promise<RankingResponseDto> {
+    console.log('🏆 [CONTROLLER] req.user:', JSON.stringify(req.user, null, 2));
+    const driverId = Number(req.user?.sub); // Convertir a número
+    console.log('🏆 [CONTROLLER] Driver ID (sub):', driverId, typeof driverId);
+    const result = await this.getDeliveryRankingUseCase.execute(driverId);
+    console.log('🏆 GetDeliveryRanking - Result:', JSON.stringify(result, null, 2));
+    return result;
+  }
+
+  @Get('ranking/debug')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: '[DEBUG] Ver todas las órdenes completadas del mes',
+    description: 'Endpoint de debugging para ver todas las órdenes completadas del mes actual con su driverId',
+  })
+  @ApiResponse({ status: 200, description: 'Datos de debug' })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  async debugRanking(@Req() req: any): Promise<any> {
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    
+    console.log('🐛 [DEBUG] req.user:', JSON.stringify(req.user, null, 2));
+    const currentUserId = req.user?.sub; // El JWT usa 'sub' para el user ID
+    
+    // Ver órdenes completadas del mes
+    const orders = await this.orderRepository.createQueryBuilder('order')
+      .select(['order.id', 'order.status', 'order.driverId', 'order.updatedAt'])
+      .where('order.status = :status', { status: 'completed' })
+      .andWhere('DATE_FORMAT(order.updatedAt, "%Y-%m") = :currentMonth', { currentMonth })
+      .getMany();
+
+    return {
+      currentMonth,
+      currentUserId,
+      totalCompletedOrders: orders.length,
+      ordersWithDriver: orders.filter(o => o.driverId !== null).length,
+      orders: orders,
+    };
   }
 }
