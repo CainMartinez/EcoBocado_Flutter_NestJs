@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IUsersRepository } from '../../domain/repositories/users.repository';
 import { PasswordHasherService } from '../../infrastructure/crypto/password-hasher.service';
 import { JwtTokenService } from '../../infrastructure/token/jwt-token.service';
@@ -15,7 +15,6 @@ type LoginResult = {
 
 @Injectable()
 export class LoginUseCase {
-  private readonly logger = new Logger(LoginUseCase.name);
 
   constructor(
     private readonly usersRepository: IUsersRepository,
@@ -39,7 +38,6 @@ export class LoginUseCase {
     const { token: accessToken } = await this.jwtTokens.signAccessToken(user, 'user');
     const { token: refreshToken } = await this.jwtTokens.signRefreshToken(user, 'user');
 
-    this.logger.log(`Login correcto: ${user.email}`);
     return { accessToken, refreshToken, user };
   }
 }

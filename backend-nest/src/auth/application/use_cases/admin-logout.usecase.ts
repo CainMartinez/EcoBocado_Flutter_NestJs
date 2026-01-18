@@ -1,4 +1,4 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { IJwtBlacklistRepository } from '../../domain/repositories/jwt-blacklist.repository';
 import { JwtTokenService } from '../../infrastructure/token/jwt-token.service';
 import { JwtBlacklistEntry } from '../../domain/entities/blacklist.entity';
@@ -9,7 +9,6 @@ import { JwtBlacklistEntry } from '../../domain/entities/blacklist.entity';
  */
 @Injectable()
 export class AdminLogoutUseCase {
-  private readonly logger = new Logger(AdminLogoutUseCase.name);
 
   constructor(
     private readonly blacklistRepo: IJwtBlacklistRepository,
@@ -45,7 +44,6 @@ export class AdminLogoutUseCase {
     });
 
     await this.blacklistRepo.add(entry);
-    this.logger.log(`Access token revocado para adminId=${params.userId}`);
   }
 
   private async safeVerify(token: string): Promise<unknown> {

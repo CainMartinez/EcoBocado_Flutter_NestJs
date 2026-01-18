@@ -1,4 +1,4 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtTokenService } from '../../infrastructure/token/jwt-token.service';
 import { IUsersRepository } from '../../domain/repositories/users.repository';
 import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception';
@@ -9,7 +9,6 @@ type RefreshResult = {
 
 @Injectable()
 export class RefreshAccessTokenUseCase {
-  private readonly logger = new Logger(RefreshAccessTokenUseCase.name);
 
   constructor(
     private readonly jwtTokens: JwtTokenService,
@@ -38,7 +37,6 @@ export class RefreshAccessTokenUseCase {
 
     const { token: accessToken } = await this.jwtTokens.signAccessToken(user, ownerType);
 
-    this.logger.log(`Access token renovado para ${user.email}`);
     return { accessToken };
   }
 }

@@ -10,8 +10,7 @@ import {
   UseGuards,
   Request,
   HttpCode,
-  HttpStatus,
-  Logger,
+  HttpStatus
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
@@ -29,7 +28,6 @@ import { UserAddressResponseDto } from '../../application/dto/response/user-addr
 @Controller('profile/addresses')
 @UseGuards(JwtAuthGuard)
 export class UserAddressesController {
-  private readonly logger = new Logger(UserAddressesController.name);
 
   constructor(
     private readonly createUserAddressUseCase: CreateUserAddressUseCase,
@@ -49,7 +47,6 @@ export class UserAddressesController {
     @Body() dto: CreateUserAddressRequestDto,
   ): Promise<UserAddressResponseDto> {
     const userId = parseInt(req.user.sub);
-    this.logger.log(`Creating address for user ID: ${userId}`);
     
     const address = await this.createUserAddressUseCase.execute(userId, dto);
     

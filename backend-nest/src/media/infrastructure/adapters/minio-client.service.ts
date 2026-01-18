@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Minio from 'minio';
 
@@ -11,7 +11,6 @@ export class MinioClientService {
     userAvatars: 'user-avatars',
     adminAvatars: 'admin-avatars',
   };
-  private readonly logger = new Logger(MinioClientService.name);
 
   constructor(private readonly configService: ConfigService) {
     this.minioClient = new Minio.Client({
@@ -49,10 +48,8 @@ export class MinioClientService {
           };
           await this.minioClient.setBucketPolicy(bucketName, JSON.stringify(policy));
           
-          this.logger.log(`Bucket ${bucketName} created successfully`);
         }
       } catch (error) {
-        this.logger.error(`Error initializing bucket ${bucketName}:`, error);
       }
     }
   }
@@ -98,10 +95,8 @@ export class MinioClientService {
         { 'Content-Type': file.mimetype },
       );
       
-      this.logger.log(`File uploaded: ${fileName} to bucket ${bucket} with slug ${slug}`);
       return { slug, fileName, path };
     } catch (error) {
-      this.logger.error(`Error uploading file:`, error);
       throw error;
     }
   }
@@ -113,7 +108,6 @@ export class MinioClientService {
     try {
       return await this.minioClient.getObject(bucket, fileName);
     } catch (error) {
-      this.logger.error(`Error getting file stream:`, error);
       throw error;
     }
   }
@@ -124,9 +118,7 @@ export class MinioClientService {
   async deleteFile(bucket: string, fileName: string): Promise<void> {
     try {
       await this.minioClient.removeObject(bucket, fileName);
-      this.logger.log(`File deleted: ${fileName} from bucket ${bucket}`);
     } catch (error) {
-      this.logger.error(`Error deleting file:`, error);
       throw error;
     }
   }
@@ -142,7 +134,6 @@ export class MinioClientService {
     try {
       return await this.minioClient.presignedGetObject(bucket, fileName, expiry);
     } catch (error) {
-      this.logger.error(`Error getting presigned URL:`, error);
       throw error;
     }
   }

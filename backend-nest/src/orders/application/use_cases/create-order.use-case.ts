@@ -109,7 +109,6 @@ export class CreateOrderUseCase {
           phone: dto.deliveryPhone || '',
         };
         
-        console.log('DEBUG - Datos de delivery temporal:', JSON.stringify(deliveryData, null, 2));
       }
 
       await this.deliveryRepository.create(deliveryData);

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IDeliveryDriverRepository } from '../../domain/repositories/delivery-driver.repository';
 import { PasswordHasherService } from '../../../auth/infrastructure/crypto/password-hasher.service';
 import { DeliveryJwtTokenService } from '../../infrastructure/token/delivery-jwt-token.service';
@@ -15,7 +15,6 @@ type DeliveryLoginResult = {
 
 @Injectable()
 export class DeliveryLoginUseCase {
-  private readonly logger = new Logger(DeliveryLoginUseCase.name);
 
   constructor(
     private readonly driverRepo: IDeliveryDriverRepository,
@@ -42,7 +41,6 @@ export class DeliveryLoginUseCase {
 
     const { token: accessToken, exp } = await this.jwtTokens.signAccessToken(driver);
 
-    this.logger.log(`Login correcto para repartidor: ${driver.email}`);
     return { accessToken, expiresIn: exp, driver };
   }
 }

@@ -25,12 +25,10 @@ export class GetDeliveryRankingUseCase {
 
   async execute(currentDriverId: number): Promise<RankingResponse> {
     try {
-      console.log('🏆 [RANKING] CurrentDriverId recibido:', currentDriverId);
       
       // Obtener el mes actual
       const now = new Date();
       const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      console.log('🏆 [RANKING] Mes actual:', currentMonth);
 
       // Query para obtener el ranking del mes actual desde delivery_drivers
       const rankings = await this.orderRepository
@@ -47,13 +45,11 @@ export class GetDeliveryRankingUseCase {
         .orderBy('deliveries', 'DESC')
         .getRawMany();
       
-      console.log('🏆 [RANKING] Rankings raw:', JSON.stringify(rankings, null, 2));
 
       // Construir las entradas del ranking
       const entries: RankingEntry[] = rankings.map((r, index) => {
         const driverIdNum = Number(r.driverId);
         const isCurrentUser = driverIdNum === currentDriverId;
-        console.log(`🏆 [RANKING] Comparando driverId:${driverIdNum} (${typeof driverIdNum}) === currentDriverId:${currentDriverId} (${typeof currentDriverId}) => ${isCurrentUser}`);
         
         return {
           position: index + 1,
@@ -65,7 +61,6 @@ export class GetDeliveryRankingUseCase {
 
       // Encontrar la posición del usuario actual
       const userPosition = entries.findIndex((e) => e.isCurrentUser);
-      console.log('🏆 [RANKING] User position:', userPosition !== -1 ? userPosition + 1 : null);
 
       return {
         currentMonth,

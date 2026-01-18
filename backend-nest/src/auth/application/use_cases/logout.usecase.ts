@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IJwtBlacklistRepository } from '../../domain/repositories/jwt-blacklist.repository';
 import { JwtBlacklistEntry } from '../../domain/entities/blacklist.entity';
 import { JwtTokenService } from '../../infrastructure/token/jwt-token.service';
@@ -10,7 +10,6 @@ import { JwtTokenService } from '../../infrastructure/token/jwt-token.service';
  */
 @Injectable()
 export class LogoutUseCase {
-  private readonly logger = new Logger(LogoutUseCase.name);
 
   constructor(
     private readonly blacklistRepo: IJwtBlacklistRepository,
@@ -42,7 +41,6 @@ export class LogoutUseCase {
     });
 
     await this.blacklistRepo.add(accessEntry);
-    this.logger.log(`Access token revocado para userId=${params.userId}`);
 
     // Si se proporciona refresh token, también revocarlo
     if (params.refreshToken) {
@@ -60,13 +58,10 @@ export class LogoutUseCase {
         });
 
         await this.blacklistRepo.add(refreshEntry);
-        this.logger.log(`Refresh token revocado para userId=${params.userId}`);
       } catch (error) {
         // Si el refresh token es inválido, lo ignoramos (puede estar expirado)
-        this.logger.warn(`Refresh token inválido o expirado durante logout para userId=${params.userId}`);
       }
     }
 
-    this.logger.log(`Logout completado para userId=${params.userId}`);
   }
 }

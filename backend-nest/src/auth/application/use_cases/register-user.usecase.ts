@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
 import { IUsersRepository } from '../../domain/repositories/users.repository';
@@ -11,7 +11,6 @@ import { User } from '../../domain/entities/users.entity';
 
 @Injectable()
 export class RegisterUserUseCase {
-  private readonly logger = new Logger(RegisterUserUseCase.name);
 
   constructor(
     private readonly usersRepository: IUsersRepository,
@@ -61,7 +60,6 @@ export class RegisterUserUseCase {
     // 5) Persistir
     const saved = await this.usersRepository.createUser(user);
 
-    this.logger.log(`Usuario registrado: ${saved.email}`);
     return saved; // ← devuelve dominio; el controller lo transforma a DTO
   }
 

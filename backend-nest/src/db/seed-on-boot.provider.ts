@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { CategoryOrmEntity } from '../shop/infrastructure/typeorm/entities-orm/category.orm-entity';
 import { ProductOrmEntity } from '../shop/infrastructure/typeorm/entities-orm/product.orm-entity';
@@ -15,7 +15,6 @@ const PRODUCT_UUIDS = {
 
 @Injectable()
 export class SeedOnBootProvider implements OnApplicationBootstrap {
-  private readonly logger = new Logger(SeedOnBootProvider.name);
 
   constructor(private readonly ds: DataSource) {}
 
@@ -27,7 +26,6 @@ export class SeedOnBootProvider implements OnApplicationBootstrap {
       retries--;
     }
     if (!this.ds.isInitialized) {
-      this.logger.error('DataSource no inicializado. Seed cancelado.');
       return;
     }
 
@@ -53,9 +51,7 @@ export class SeedOnBootProvider implements OnApplicationBootstrap {
           updatedAt: new Date(),
         });
         await adminRepo.save(admin);
-        this.logger.log(`Admin inicial creado: ${adminEmail}`);
       } else {
-        this.logger.log(`Admin existente detectado: ${adminEmail}`);
       }
       // Categorías base (para FK de productos), los crea si no existen
       const cats = [
@@ -134,6 +130,5 @@ export class SeedOnBootProvider implements OnApplicationBootstrap {
       );
     });
     // Mensaje para el log de docker
-    this.logger.log('Dummies Cargadas correctamente.');
   }
 }

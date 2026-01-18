@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IDeliveryDriverRepository } from '../../domain/repositories/delivery-driver.repository';
 import { PasswordHasherService } from '../../../auth/infrastructure/crypto/password-hasher.service';
 import { DeliveryRegisterRequestDto } from '../dto/request/delivery-register.request.dto';
@@ -8,7 +8,6 @@ import { DeliveryDriver } from '../../domain/entities/delivery-driver.entity';
 
 @Injectable()
 export class RegisterDeliveryDriverUseCase {
-  private readonly logger = new Logger(RegisterDeliveryDriverUseCase.name);
 
   constructor(
     private readonly driverRepo: IDeliveryDriverRepository,
@@ -43,7 +42,6 @@ export class RegisterDeliveryDriverUseCase {
       updatedAt: new Date(),
     } as any);
 
-    this.logger.log(`Nuevo repartidor registrado: ${driver.email}`);
     return driver;
   }
 }

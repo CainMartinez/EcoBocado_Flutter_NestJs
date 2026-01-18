@@ -155,11 +155,8 @@ export class OrdersController {
   })
   @ApiResponse({ status: 401, description: 'No autorizado' })
   async getDeliveryRanking(@Req() req: any): Promise<RankingResponseDto> {
-    console.log('🏆 [CONTROLLER] req.user:', JSON.stringify(req.user, null, 2));
     const driverId = Number(req.user?.sub); // Convertir a número
-    console.log('🏆 [CONTROLLER] Driver ID (sub):', driverId, typeof driverId);
     const result = await this.getDeliveryRankingUseCase.execute(driverId);
-    console.log('🏆 GetDeliveryRanking - Result:', JSON.stringify(result, null, 2));
     return result;
   }
 
@@ -175,7 +172,6 @@ export class OrdersController {
     const now = new Date();
     const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     
-    console.log('🐛 [DEBUG] req.user:', JSON.stringify(req.user, null, 2));
     const currentUserId = req.user?.sub; // El JWT usa 'sub' para el user ID
     
     // Ver órdenes completadas del mes

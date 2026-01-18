@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IAdminsRepository } from '../../domain/repositories/admin.repository';
 import { PasswordHasherService } from '../../infrastructure/crypto/password-hasher.service';
 import { JwtTokenService } from '../../infrastructure/token/jwt-token.service';
@@ -17,7 +17,6 @@ type AdminLoginResult = {
  */
 @Injectable()
 export class AdminLoginUseCase {
-  private readonly logger = new Logger(AdminLoginUseCase.name);
 
   constructor(
     private readonly adminsRepo: IAdminsRepository,
@@ -50,7 +49,6 @@ export class AdminLoginUseCase {
       updatedAt: admin.updatedAt,
     } as any, 'admin');
 
-    this.logger.log(`Admin autenticado: ${admin.email}`);
     return { accessToken, admin };
   }
 }
