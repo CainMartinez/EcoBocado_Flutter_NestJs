@@ -33,6 +33,20 @@ export class UpdateOrderStatusUseCase {
 
     const { order } = result;
 
+    // Si se intenta marcar como "completed", validar que el repartidor sea el asignado
+    if (newStatus === 'completed' && driverId) {
+      if (order.driverId === null) {
+        throw new BadRequestException('Este pedido no tiene un repartidor asignado');
+      }
+      
+      if (order.driverId !== driverId) {
+        throw new BadRequestException(
+          'No puedes completar un pedido que no está asignado a ti. ' +
+          `Pedido asignado a repartidor ID: ${order.driverId}, tu ID: ${driverId}`
+        );
+      }
+    }
+
     // Validar transiciones de estado permitidas
     const currentStatus = order.status;
     const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {

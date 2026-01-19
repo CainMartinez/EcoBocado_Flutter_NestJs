@@ -121,7 +121,7 @@ export class OrdersController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ 
     summary: 'Actualizar el estado de un pedido',
-    description: 'Actualiza el estado de un pedido existente',
+    description: 'Actualiza el estado de un pedido existente. Al marcar como "completed" se valida que el repartidor autenticado sea el asignado al pedido.',
   })
   @ApiParam({ name: 'id', description: 'ID del pedido', type: 'integer' })
   @ApiResponse({
@@ -136,9 +136,20 @@ export class OrdersController {
     @Body() dto: UpdateOrderStatusRequestDto,
     @Req() req: any,
   ): Promise<{ message: string }> {
-    // Si el estado es "delivered", pasar el ID del usuario autenticado como driverId
-    const driverId = dto.status === 'delivered' ? Number(req.user?.sub) : undefined;
-    await this.updateOrderStatusUseCase.execute(id, dto.status, driverId);
+    // Pasar el ID del usuario autenticado como driverId para validaciones
+    const driverId = Number(req.user?.sub);
+    
+    // Si el estado es "delivered", asignar el repartidor al pedido
+    if (dto.status === 'delivered') {
+      await this.updateOrderStatusUseCase.execute(id, dto.status, driverId);
+    } else if (dto.status === 'completed') {
+      // Si es "completed", validar que sea el repartidor asignado
+      await this.updateOrderStatusUseCase.execute(id, dto.status, driverId);
+    } else {
+      // Para otros estados, no pasar driverId
+      await this.updateOrderStatusUseCase.execute(id, dto.status);
+    }
+    
     return { message: 'Estado actualizado correctamente' };
   }
 
