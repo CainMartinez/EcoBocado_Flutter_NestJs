@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/order.dart';
 import 'order_status_badge.dart';
+import 'order_qr_dialog.dart';
 
 /// Widget para mostrar un pedido en la lista con detalles expandibles
 class OrderListItem extends StatelessWidget {
@@ -82,6 +83,18 @@ class OrderListItem extends StatelessWidget {
         ),
         children: [
           _OrderDetails(order: order),
+          // Botón de generar QR si el pedido está en estado válido
+          if (order.status == 'confirmed' || order.status == 'delivered')
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _GenerateQRButton(
+                order: order,
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => OrderQRDialog(order: order),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -216,6 +229,40 @@ class _OrderDetails extends StatelessWidget {
       default:
         return itemType;
     }
+  }
+}
+
+/// Botón para generar el código QR del pedido
+class _GenerateQRButton extends StatelessWidget {
+  final Order order;
+  final VoidCallback onPressed;
+
+  const _GenerateQRButton({
+    required this.order,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: const Icon(Icons.qr_code_2, size: 20),
+        label: const Text('Generar código QR'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: theme.colorScheme.primary,
+          foregroundColor: theme.colorScheme.onPrimary,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+    );
   }
 }
 
