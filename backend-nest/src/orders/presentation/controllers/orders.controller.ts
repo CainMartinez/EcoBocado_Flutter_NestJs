@@ -24,12 +24,15 @@ import { UpdateOrderStatusRequestDto } from '../../application/dto/request/updat
 import { OrderResponseDto } from '../../application/dto/response/order.response.dto';
 import { DeliveryStatsResponseDto } from '../../application/dto/response/delivery-stats.response.dto';
 import { RankingResponseDto } from '../dto/response/ranking.response.dto';
+import { UpdateLocationDto } from '../dto/update-location.dto';
+import { DeliveryLocationResponseDto } from '../dto/delivery-location-response.dto';
 import { CreateOrderUseCase } from '../../application/use_cases/create-order.use-case';
 import { GetOrderByIdUseCase } from '../../application/use_cases/get-order-by-id.use-case';
 import { GetUserOrdersUseCase } from '../../application/use_cases/get-user-orders.use-case';
 import { UpdateOrderStatusUseCase } from '../../application/use_cases/update-order-status.use-case';
 import { GetDeliveryStatsUseCase } from '../../application/use_cases/get-delivery-stats.use-case';
 import { GetDeliveryRankingUseCase } from '../../application/use-cases/get-delivery-ranking.use-case';
+import { DeliveryLocationService } from '../../application/delivery-location.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderOrmEntity } from '../../infrastructure/typeorm/entities-orm/order.orm-entity';
@@ -48,6 +51,7 @@ export class OrdersController {
     private readonly updateOrderStatusUseCase: UpdateOrderStatusUseCase,
     private readonly getDeliveryStatsUseCase: GetDeliveryStatsUseCase,
     private readonly getDeliveryRankingUseCase: GetDeliveryRankingUseCase,
+    private readonly deliveryLocationService: DeliveryLocationService,
   ) {}
 
   @Post()
@@ -199,5 +203,78 @@ export class OrdersController {
       ordersWithDriver: orders.filter(o => o.driverId !== null).length,
       orders: orders,
     };
+  }
+
+  @Post('location')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: 'Actualizar ubicación GPS del repartidor',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Ubicación actualizada exitosamente. Devuelve los datos de ubicación guardados.',
+    type: DeliveryLocationResponseDto,
+    schema: {
+      example: {
+        deliveryUserId: 5,
+        orderId: null,
+        latitude: 40.416775,
+        longitude: -3.703790,
+        updatedAt: '2026-01-23T20:15:30.000Z'
+      }
+    }
+  })
+  @ApiResponse({ 
+    status: 401, 
+    description: 'No autorizado. Token JWT inválido o expirado.' 
+  })
+  @ApiResponse({ 
+    status: 400, 
+    description: 'Datos inválidos. Verifica que latitude y longitude sean números válidos.' 
+  })
+  async updateLocation(
+    @Req() req: any,
+    @Body() dto: UpdateLocationDto,
+  ): Promise<DeliveryLocationResponseDto> {
+    const deliveryUserId = Number(req.user.sub);
+    return await this.deliveryLocationService.updateLocation(deliveryUserId, dto);
+  }
+
+  @Get(':id/location')
+  @ApiOperation({ 
+    summary: 'Obtener ubicación actual del repartidor de un pedido',
+  })
+  @ApiParam({ 
+    name: 'id', 
+    description: 'ID del pedido del cual se quiere conocer la ubicación del repartidor asignado',
+    type: 'integer',
+    example: 38
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Ubicación encontrada y devuelta exitosamente.',
+    type: DeliveryLocationResponseDto,
+    schema: {
+      example: {
+        deliveryUserId: 5,
+        orderId: null,
+        latitude: 40.416775,
+        longitude: -3.703790,
+        updatedAt: '2026-01-23T20:15:30.000Z'
+      }
+    }
+  })
+  @ApiResponse({ 
+    status: 404, 
+    description: 'No se encontró ubicación para este pedido. El repartidor aún no ha enviado su ubicación o el pedido no tiene repartidor asignado.',
+    schema: {
+      example: null
+    }
+  })
+  async getOrderLocation(
+    @Param('id', ParseIntPipe) orderId: number,
+  ): Promise<DeliveryLocationResponseDto | null> {
+    return await this.deliveryLocationService.getLocationByOrderId(orderId);
   }
 }
