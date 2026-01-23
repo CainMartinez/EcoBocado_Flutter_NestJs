@@ -53,8 +53,8 @@ class OrderStatusBadge extends StatelessWidget {
       case 'confirmed':
         return _StatusInfo(
           label: 'Confirmado',
-          backgroundColor: Colors.blue.shade100,
-          textColor: Colors.blue.shade900,
+          backgroundColor: Colors.orange.shade100,
+          textColor: Colors.orange.shade900,
           icon: Icons.check_circle,
         );
       case 'prepared':
@@ -66,7 +66,14 @@ class OrderStatusBadge extends StatelessWidget {
         );
       case 'delivered':
         return _StatusInfo(
-          label: 'Entregado',
+          label: 'Enviado',
+          backgroundColor: Colors.blue.shade100,
+          textColor: Colors.blue.shade900,
+          icon: Icons.local_shipping,
+        );
+      case 'completed':
+        return _StatusInfo(
+          label: 'Completado',
           backgroundColor: Colors.green.shade100,
           textColor: Colors.green.shade900,
           icon: Icons.done_all,
@@ -87,7 +94,7 @@ class OrderStatusBadge extends StatelessWidget {
         );
       default:
         return _StatusInfo(
-          label: status,
+          label: 'Desconocido',
           backgroundColor: Colors.grey.shade100,
           textColor: Colors.grey.shade900,
           icon: Icons.info,

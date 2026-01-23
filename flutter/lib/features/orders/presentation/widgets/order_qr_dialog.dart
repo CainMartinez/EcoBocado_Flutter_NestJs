@@ -141,10 +141,10 @@ class OrderQRDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: theme.colorScheme.errorContainer.withOpacity(0.3),
+                color: theme.colorScheme.errorContainer.withValues(alpha:0.3),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: theme.colorScheme.error.withOpacity(0.5),
+                  color: theme.colorScheme.error.withValues(alpha:0.5),
                 ),
               ),
               child: Row(
@@ -179,13 +179,13 @@ class OrderQRDialog extends StatelessWidget {
       case 'confirmed':
         return 'Confirmado';
       case 'delivered':
-        return 'En marcha';
+        return 'Enviado';
       case 'completed':
         return 'Completado';
       case 'cancelled':
         return 'Cancelado';
       default:
-        return status;
+        return 'Desconocido';
     }
   }
 }

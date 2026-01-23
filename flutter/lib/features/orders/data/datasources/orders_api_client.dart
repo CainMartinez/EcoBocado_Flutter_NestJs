@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../../core/utils/app_services.dart';
 import '../../domain/entities/order.dart';
+import '../../domain/entities/delivery_location.dart';
 import '../../domain/dto/create_order_dto.dart';
 
 /// Cliente API para el módulo de Orders
@@ -42,6 +43,24 @@ class OrdersApiClient {
       
       return Order.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Obtiene la ubicación del repartidor de un pedido específico
+  Future<DeliveryLocation?> getDeliveryLocation(int orderId) async {
+    try {
+      final response = await _dio.get('/orders/$orderId/location');
+      
+      if (response.data == null) {
+        return null;
+      }
+      
+      return DeliveryLocation.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return null;
+      }
       throw _handleDioError(e);
     }
   }

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../domain/entities/order.dart';
 import 'order_status_badge.dart';
 import 'order_qr_dialog.dart';
+import '../screens/delivery_tracking_map_screen.dart';
 
 /// Widget para mostrar un pedido en la lista con detalles expandibles
 class OrderListItem extends StatelessWidget {
@@ -83,8 +84,24 @@ class OrderListItem extends StatelessWidget {
         ),
         children: [
           _OrderDetails(order: order),
+          // Botón para ver ubicación del repartidor si está confirmado o en ruta
+          if (order.status == 'delivered')
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _TrackDeliveryButton(
+                order: order,
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DeliveryTrackingMapScreen(
+                      orderId: order.id,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           // Botón de generar QR si el pedido está en estado válido
-          if (order.status == 'confirmed' || order.status == 'delivered')
+          if (order.status == 'delivered')
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: _GenerateQRButton(
@@ -229,6 +246,40 @@ class _OrderDetails extends StatelessWidget {
       default:
         return itemType;
     }
+  }
+}
+
+/// Botón para ver la ubicación del repartidor en tiempo real
+class _TrackDeliveryButton extends StatelessWidget {
+  final Order order;
+  final VoidCallback onPressed;
+
+  const _TrackDeliveryButton({
+    required this.order,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: const Icon(Icons.location_on, size: 20),
+        label: const Text('Ver ubicación del repartidor'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: theme.colorScheme.secondary,
+          foregroundColor: theme.colorScheme.onSecondary,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+    );
   }
 }
 
