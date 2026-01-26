@@ -69,6 +69,12 @@ export class UpdateOrderStatusUseCase {
     // Si el estado cambia a "delivered" y se proporciona un driverId, actualizar ambos
     if (newStatus === 'delivered' && driverId) {
       await this.orderRepository.updateStatusAndDriver(orderId, newStatus, driverId);
+      // Guardar timestamp de cuando se acepta el pedido
+      await this.orderRepository.updateDeliveredAt(orderId, new Date());
+    } else if (newStatus === 'completed') {
+      // Guardar timestamp de cuando se completa el pedido
+      await this.orderRepository.updateCompletedAt(orderId, new Date());
+      await this.orderRepository.updateStatus(orderId, newStatus);
     } else {
       // Actualizar solo el estado
       await this.orderRepository.updateStatus(orderId, newStatus);

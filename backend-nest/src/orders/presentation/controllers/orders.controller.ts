@@ -24,6 +24,7 @@ import { UpdateOrderStatusRequestDto } from '../../application/dto/request/updat
 import { OrderResponseDto } from '../../application/dto/response/order.response.dto';
 import { DeliveryStatsResponseDto } from '../../application/dto/response/delivery-stats.response.dto';
 import { RankingResponseDto } from '../dto/response/ranking.response.dto';
+import { DriverStatsResponseDto } from '../dto/driver-stats-response.dto';
 import { UpdateLocationDto } from '../dto/update-location.dto';
 import { DeliveryLocationResponseDto } from '../dto/delivery-location-response.dto';
 import { CreateOrderUseCase } from '../../application/use_cases/create-order.use-case';
@@ -32,6 +33,7 @@ import { GetUserOrdersUseCase } from '../../application/use_cases/get-user-order
 import { UpdateOrderStatusUseCase } from '../../application/use_cases/update-order-status.use-case';
 import { GetDeliveryStatsUseCase } from '../../application/use_cases/get-delivery-stats.use-case';
 import { GetDeliveryRankingUseCase } from '../../application/use-cases/get-delivery-ranking.use-case';
+import { GetDriverStatsUseCase } from '../../application/use_cases/get-driver-stats.use-case';
 import { DeliveryLocationService } from '../../application/delivery-location.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -50,6 +52,7 @@ export class OrdersController {
     private readonly orderRepository: Repository<OrderOrmEntity>,
     private readonly updateOrderStatusUseCase: UpdateOrderStatusUseCase,
     private readonly getDeliveryStatsUseCase: GetDeliveryStatsUseCase,
+    private readonly getDriverStatsUseCase: GetDriverStatsUseCase,
     private readonly getDeliveryRankingUseCase: GetDeliveryRankingUseCase,
     private readonly deliveryLocationService: DeliveryLocationService,
   ) {}
@@ -276,5 +279,45 @@ export class OrdersController {
     @Param('id', ParseIntPipe) orderId: number,
   ): Promise<DeliveryLocationResponseDto | null> {
     return await this.deliveryLocationService.getLocationByOrderId(orderId);
+  }
+
+  @Get('stats/drivers')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: 'Obtener estadísticas de velocidad de repartidores',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Estadísticas obtenidas exitosamente',
+    type: DriverStatsResponseDto,
+    schema: {
+      example: {
+        topDrivers: [
+          {
+            driverId: 5,
+            driverName: 'Juan García',
+            completedOrders: 42,
+            averageDeliveryTime: 12.5
+          },
+          {
+            driverId: 8,
+            driverName: 'María López',
+            completedOrders: 35,
+            averageDeliveryTime: 14.2
+          },
+          {
+            driverId: 3,
+            driverName: 'Pedro Martínez',
+            completedOrders: 28,
+            averageDeliveryTime: 15.8
+          }
+        ]
+      }
+    }
+  })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  async getDriverStats(): Promise<DriverStatsResponseDto> {
+    const topDrivers = await this.getDriverStatsUseCase.execute();
+    return { topDrivers };
   }
 }

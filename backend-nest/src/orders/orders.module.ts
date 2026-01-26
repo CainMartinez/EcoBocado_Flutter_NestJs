@@ -12,6 +12,7 @@ import { GetUserOrdersUseCase } from './application/use_cases/get-user-orders.us
 import { UpdateOrderStatusUseCase } from './application/use_cases/update-order-status.use-case';
 import { GetDeliveryStatsUseCase } from './application/use_cases/get-delivery-stats.use-case';
 import { GetDeliveryRankingUseCase } from './application/use-cases/get-delivery-ranking.use-case';
+import { GetDriverStatsUseCase } from './application/use_cases/get-driver-stats.use-case';
 import { DeliveryLocationService } from './application/delivery-location.service';
 import { OrdersController } from './presentation/controllers/orders.controller';
 import { PaymentModule } from '../payment/payment.module';
@@ -44,6 +45,7 @@ import { BillingModule } from '../billing/billing.module';
     UpdateOrderStatusUseCase,
     GetDeliveryRankingUseCase,
     GetDeliveryStatsUseCase,
+    GetDriverStatsUseCase,
     DeliveryLocationService,
   ],
   exports: [ORDER_REPOSITORY_TOKEN],

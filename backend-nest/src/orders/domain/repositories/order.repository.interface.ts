@@ -44,6 +44,26 @@ export interface IOrderRepository {
    * Actualiza el estado y el repartidor de una orden
    */
   updateStatusAndDriver(orderId: number, status: string, driverId: number): Promise<void>;
+
+  /**
+   * Actualiza el timestamp de cuando se acepta/asigna el pedido
+   */
+  updateDeliveredAt(orderId: number, deliveredAt: Date): Promise<void>;
+
+  /**
+   * Actualiza el timestamp de cuando se completa el pedido
+   */
+  updateCompletedAt(orderId: number, completedAt: Date): Promise<void>;
+
+  /**
+   * Obtiene estadísticas de velocidad de repartidores (top 3 más rápidos)
+   */
+  getDriverStats(): Promise<Array<{
+    driverId: number;
+    driverName: string;
+    completedOrders: number;
+    averageDeliveryTime: number; // en minutos
+  }>>;
 }
 
 export const ORDER_REPOSITORY_TOKEN = Symbol('ORDER_REPOSITORY_TOKEN');

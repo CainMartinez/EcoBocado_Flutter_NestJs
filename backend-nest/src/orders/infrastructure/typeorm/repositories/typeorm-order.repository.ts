@@ -280,4 +280,44 @@ export class TypeOrmOrderRepository implements IOrderRepository {
   async updateStatusAndDriver(orderId: number, status: string, driverId: number): Promise<void> {
     await this.orderRepo.update({ id: orderId }, { status, driverId });
   }
+
+  async updateDeliveredAt(orderId: number, deliveredAt: Date): Promise<void> {
+    await this.orderRepo.update({ id: orderId }, { deliveredAt });
+  }
+
+  async updateCompletedAt(orderId: number, completedAt: Date): Promise<void> {
+    await this.orderRepo.update({ id: orderId }, { completedAt });
+  }
+
+  async getDriverStats(): Promise<Array<{
+    driverId: number;
+    driverName: string;
+    completedOrders: number;
+    averageDeliveryTime: number;
+  }>> {
+    const stats = await this.orderRepo
+      .createQueryBuilder('order')
+      .select('order.driver_id', 'driverId')
+      .addSelect('user.name', 'driverName')
+      .addSelect('COUNT(order.id)', 'completedOrders')
+      .addSelect(
+        'AVG(TIMESTAMPDIFF(MINUTE, order.delivered_at, order.completed_at))',
+        'averageDeliveryTime'
+      )
+      .innerJoin('users', 'user', 'user.id = order.driver_id')
+      .where('order.status = :status', { status: 'completed' })
+      .andWhere('order.delivered_at IS NOT NULL')
+      .andWhere('order.completed_at IS NOT NULL')
+      .groupBy('order.driver_id')
+      .orderBy('averageDeliveryTime', 'ASC')
+      .limit(3)
+      .getRawMany();
+
+    return stats.map(stat => ({
+      driverId: stat.driverId,
+      driverName: stat.driverName,
+      completedOrders: parseInt(stat.completedOrders),
+      averageDeliveryTime: parseFloat(stat.averageDeliveryTime) || 0,
+    }));
+  }
 }

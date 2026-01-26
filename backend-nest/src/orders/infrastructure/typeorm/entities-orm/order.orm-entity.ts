@@ -41,6 +41,12 @@ export class OrderOrmEntity {
   @Column({ name: 'driver_id', type: 'int', nullable: true })
   driverId: number | null;
 
+  @Column({ name: 'delivered_at', type: 'timestamp', nullable: true })
+  deliveredAt: Date | null;
+
+  @Column({ name: 'completed_at', type: 'timestamp', nullable: true })
+  completedAt: Date | null;
+
   @Column({ name: 'payment_intent_id', type: 'varchar', length: 255, nullable: true })
   paymentIntentId: string | null;
 
