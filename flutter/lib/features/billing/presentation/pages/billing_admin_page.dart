@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:eco_bocado/core/l10n/app_localizations.dart';
 import 'package:eco_bocado/features/billing/presentation/providers/billing_provider.dart';
+import 'package:eco_bocado/features/billing/presentation/utils/invoice_pdf_generator.dart';
 import 'package:intl/intl.dart';
 
 class BillingAdminPage extends ConsumerWidget {
@@ -131,8 +132,52 @@ class BillingAdminPage extends ConsumerWidget {
                             ],
                           ],
                         ),
-                      ),
-                    ],
+                      ),                      const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            OutlinedButton.icon(
+                              onPressed: () async {
+                                try {
+                                  await InvoicePdfGenerator.shareInvoice(record);
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error al descargar: $e'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                              icon: const Icon(Icons.download),
+                              label: const Text('Descargar PDF'),
+                            ),
+                            const SizedBox(width: 8),
+                            FilledButton.icon(
+                              onPressed: () async {
+                                try {
+                                  await InvoicePdfGenerator.previewInvoice(record);
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error al generar PDF: $e'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                              icon: const Icon(Icons.picture_as_pdf),
+                              label: const Text('Ver PDF'),
+                            ),
+                          ],
+                        ),
+                      ),                    ],
                   ),
                 );
               },

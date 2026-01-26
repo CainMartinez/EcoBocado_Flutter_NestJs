@@ -351,11 +351,12 @@ class _DashboardAdminPageState extends ConsumerState<DashboardAdminPage> {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'confirmed':
-        return Colors.blue;
       case 'prepared':
-        return Colors.orange;
+        return Colors.grey;
       case 'delivered':
         return Colors.green;
+      case 'completed':
+        return Colors.green.shade700;
       case 'cancelled':
         return Colors.red;
       default:
@@ -375,6 +376,8 @@ class _DashboardAdminPageState extends ConsumerState<DashboardAdminPage> {
         return 'Preparado';
       case 'delivered':
         return 'Entregado';
+      case 'completed':
+        return 'Completado';
       case 'cancelled':
         return 'Cancelado';
       default:

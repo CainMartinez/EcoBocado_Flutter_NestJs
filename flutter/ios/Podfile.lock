@@ -9,6 +9,8 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - printing (1.0.0):
+    - Flutter
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -74,6 +76,7 @@ DEPENDENCIES:
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - printing (from `.symlinks/plugins/printing/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
 
@@ -99,6 +102,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  printing:
+    :path: ".symlinks/plugins/printing/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   stripe_ios:
@@ -110,6 +115,7 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
+  printing: 54ff03f28fe9ba3aa93358afb80a8595a071dd07
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   Stripe: 8a03a78bfa16b197f9fac51e42670ac563b34388
   stripe_ios: 95bdf6ba58efd184fe1dfed194cd8692299d66ca
