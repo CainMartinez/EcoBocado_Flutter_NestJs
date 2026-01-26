@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/utils/app_services.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/entities/delivery_location.dart';
+import '../../domain/entities/driver_stats.dart';
 import '../../domain/dto/create_order_dto.dart';
 
 /// Cliente API para el módulo de Orders
@@ -61,6 +62,16 @@ class OrdersApiClient {
       if (e.response?.statusCode == 404) {
         return null;
       }
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Obtiene estadísticas de velocidad de repartidores (top 3)
+  Future<DriverStatsResponse> getDriverStats() async {
+    try {
+      final response = await _dio.get('/orders/stats/drivers');
+      return DriverStatsResponse.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
       throw _handleDioError(e);
     }
   }

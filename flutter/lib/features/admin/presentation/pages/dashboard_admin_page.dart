@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:eco_bocado/core/l10n/app_localizations.dart';
 import 'package:eco_bocado/features/admin/presentation/providers/dashboard_provider.dart';
+import 'package:eco_bocado/features/orders/presentation/providers/driver_stats_provider.dart';
+import 'package:eco_bocado/features/orders/presentation/screens/driver_stats_screen.dart';
 import 'package:intl/intl.dart';
 
 class DashboardAdminPage extends ConsumerStatefulWidget {
@@ -20,7 +22,7 @@ class _DashboardAdminPageState extends ConsumerState<DashboardAdminPage> {
     
     final metricsAsync = ref.watch(dashboardMetricsProvider);
     final recentOrdersAsync = ref.watch(recentOrdersProvider);
-    final topProductsAsync = ref.watch(topProductsProvider);
+    final driverStatsAsync = ref.watch(driverStatsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +33,7 @@ class _DashboardAdminPageState extends ConsumerState<DashboardAdminPage> {
             onPressed: () {
               ref.invalidate(dashboardMetricsProvider);
               ref.invalidate(recentOrdersProvider);
-              ref.invalidate(topProductsProvider);
+              ref.invalidate(driverStatsProvider);
             },
           ),
         ],
@@ -40,7 +42,7 @@ class _DashboardAdminPageState extends ConsumerState<DashboardAdminPage> {
         onRefresh: () async {
           ref.invalidate(dashboardMetricsProvider);
           ref.invalidate(recentOrdersProvider);
-          ref.invalidate(topProductsProvider);
+          ref.invalidate(driverStatsProvider);
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -107,6 +109,111 @@ class _DashboardAdminPageState extends ConsumerState<DashboardAdminPage> {
               
               const SizedBox(height: 24),
               
+              // Ranking de repartidores
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '🏆 Top Repartidores',
+                    style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DriverStatsScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.arrow_forward),
+                    label: const Text('Ver todo'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              
+              driverStatsAsync.when(
+                data: (stats) => stats.topDrivers.isEmpty
+                    ? Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              Icon(Icons.emoji_events_outlined, size: 64, color: cs.onSurfaceVariant),
+                              const SizedBox(height: 16),
+                              Text('Aún no hay estadísticas', style: tt.bodyLarge),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Los repartidores aparecerán cuando completen pedidos',
+                                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Card(
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: stats.topDrivers.length > 3 ? 3 : stats.topDrivers.length,
+                          separatorBuilder: (context, index) => const Divider(),
+                          itemBuilder: (context, index) {
+                            final driver = stats.topDrivers[index];
+                            final isFirst = index == 0;
+                            final isSecond = index == 1;
+                            
+                            String trophy;
+                            Color trophyColor;
+                            if (isFirst) {
+                              trophy = '🥇';
+                              trophyColor = const Color(0xFFFFD700);
+                            } else if (isSecond) {
+                              trophy = '🥈';
+                              trophyColor = const Color(0xFFC0C0C0);
+                            } else {
+                              trophy = '🥉';
+                              trophyColor = const Color(0xFFCD7F32);
+                            }
+                            
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: trophyColor,
+                                child: Text(
+                                  trophy,
+                                  style: const TextStyle(fontSize: 24),
+                                ),
+                              ),
+                              title: Text(driver.driverName),
+                              subtitle: Text('${driver.completedOrders} pedidos completados'),
+                              trailing: Text(
+                                driver.formattedTime,
+                                style: tt.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: cs.primary,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                loading: () => const Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(32),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
+                error: (error, stack) => Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text('Error: $error', style: TextStyle(color: cs.error)),
+                    ),
+                  ),
+              ),
+              
+              const SizedBox(height: 24),
+              
               // Pedidos recientes
               Text(
                 l10n.recentOrders,
@@ -159,81 +266,6 @@ class _DashboardAdminPageState extends ConsumerState<DashboardAdminPage> {
                               trailing: Text(
                                 '${order.totalAmount.toStringAsFixed(2)} €',
                                 style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                loading: () => const Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(32),
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                  ),
-                error: (error, stack) => Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text('Error: $error', style: TextStyle(color: cs.error)),
-                    ),
-                  ),
-              ),
-              
-              const SizedBox(height: 24),
-              
-              // Productos más vendidos
-              Text(
-                l10n.topProducts,
-                style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              
-              topProductsAsync.when(
-                data: (products) => products.isEmpty
-                    ? Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            children: [
-                              Icon(Icons.trending_up, size: 64, color: cs.onSurfaceVariant),
-                              const SizedBox(height: 16),
-                              Text(l10n.noSalesData, style: tt.bodyLarge),
-                              const SizedBox(height: 8),
-                              Text(
-                                l10n.salesDataWillAppearHere,
-                                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : Card(
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: products.length,
-                          separatorBuilder: (context, index) => const Divider(),
-                          itemBuilder: (context, index) {
-                            final product = products[index];
-                            final locale = Localizations.localeOf(context);
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: cs.primaryContainer,
-                                child: Text(
-                                  '${index + 1}',
-                                  style: TextStyle(
-                                    color: cs.onPrimaryContainer,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              title: Text(product.name(locale.languageCode)),
-                              trailing: Text(
-                                '${product.totalSold} vendidos',
-                                style: tt.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: cs.primary,
-                                ),
                               ),
                             );
                           },
