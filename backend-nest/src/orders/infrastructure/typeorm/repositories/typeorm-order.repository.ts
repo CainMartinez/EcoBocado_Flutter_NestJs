@@ -298,13 +298,13 @@ export class TypeOrmOrderRepository implements IOrderRepository {
     const stats = await this.orderRepo
       .createQueryBuilder('order')
       .select('order.driver_id', 'driverId')
-      .addSelect('user.name', 'driverName')
+      .addSelect('driver.name', 'driverName')
       .addSelect('COUNT(order.id)', 'completedOrders')
       .addSelect(
         'AVG(TIMESTAMPDIFF(MINUTE, order.delivered_at, order.completed_at))',
         'averageDeliveryTime'
       )
-      .innerJoin('users', 'user', 'user.id = order.driver_id')
+      .innerJoin('delivery_drivers', 'driver', 'driver.id = order.driver_id')
       .where('order.status = :status', { status: 'completed' })
       .andWhere('order.delivered_at IS NOT NULL')
       .andWhere('order.completed_at IS NOT NULL')

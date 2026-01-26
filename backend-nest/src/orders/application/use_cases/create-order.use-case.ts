@@ -123,7 +123,6 @@ export class CreateOrderUseCase {
           parseFloat(order.total.toString()),
         );
       } catch (error) {
-        console.error('Error creating invoice for order:', error);
         // No lanzamos error para no bloquear la creación del pedido
       }
     }
@@ -137,6 +136,7 @@ export class CreateOrderUseCase {
       uuid: order.uuid,
       userId: order.userId,
       status: order.status,
+      deliveryType: order.deliveryType,
       pickupSlotId: order.pickupSlotId,
       paymentIntentId: order.paymentIntentId,
       subtotal: order.subtotal,

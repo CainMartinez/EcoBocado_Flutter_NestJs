@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { OrderOrmEntity } from '../../../orders/infrastructure/typeorm/entities-orm/order.orm-entity';
 import { ProductOrmEntity } from '../../../shop/infrastructure/typeorm/entities-orm/product.orm-entity';
 import { UsersOrmEntity } from '../../../auth/infrastructure/typeorm/entities-orm/users.orm-entity';
+import { InvoiceOrmEntity } from '../../../billing/infrastructure/typeorm/entities-orm/invoice.orm-entity';
 import { DashboardMetricsResponseDto } from '../dto/response/dashboard-metrics.response.dto';
 
 @Injectable()
@@ -15,19 +16,18 @@ export class GetDashboardMetricsUseCase {
     private readonly productRepository: Repository<ProductOrmEntity>,
     @InjectRepository(UsersOrmEntity)
     private readonly userRepository: Repository<UsersOrmEntity>,
+    @InjectRepository(InvoiceOrmEntity)
+    private readonly invoiceRepository: Repository<InvoiceOrmEntity>,
   ) {}
 
   async execute(): Promise<DashboardMetricsResponseDto> {
     // Total de pedidos
     const totalOrders = await this.orderRepository.count();
 
-    // Ingresos totales (solo pedidos completados/pagados)
-    const revenueResult = await this.orderRepository
-      .createQueryBuilder('order')
-      .select('SUM(order.total)', 'total')
-      .where('order.status IN (:...statuses)', { 
-        statuses: ['confirmed', 'prepared', 'delivered'] 
-      })
+    // Ingresos totales (suma de todas las facturas emitidas)
+    const revenueResult = await this.invoiceRepository
+      .createQueryBuilder('invoice')
+      .select('SUM(invoice.total)', 'total')
       .getRawOne();
     const totalRevenue = parseFloat(revenueResult?.total || '0');
 

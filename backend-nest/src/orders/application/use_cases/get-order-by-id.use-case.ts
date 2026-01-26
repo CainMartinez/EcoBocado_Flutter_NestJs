@@ -23,6 +23,7 @@ export class GetOrderByIdUseCase {
       uuid: order.uuid,
       userId: order.userId,
       status: order.status,
+      deliveryType: order.deliveryType,
       pickupSlotId: order.pickupSlotId,
       paymentIntentId: order.paymentIntentId,
       subtotal: order.subtotal,

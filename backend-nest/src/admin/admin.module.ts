@@ -6,6 +6,7 @@ import { ProductAllergenOrmEntity } from '../shop/infrastructure/typeorm/entitie
 import { OrderOrmEntity } from '../orders/infrastructure/typeorm/entities-orm/order.orm-entity';
 import { OrderItemOrmEntity } from '../orders/infrastructure/typeorm/entities-orm/order-item.orm-entity';
 import { UsersOrmEntity } from '../auth/infrastructure/typeorm/entities-orm/users.orm-entity';
+import { InvoiceOrmEntity } from '../billing/infrastructure/typeorm/entities-orm/invoice.orm-entity';
 import { ProductsAdminController } from './presentation/controllers/products-admin.controller';
 import { DashboardAdminController } from './presentation/controllers/dashboard-admin.controller';
 import { IProductAdminRepository } from './domain/repositories/product-admin.repository';
@@ -30,6 +31,7 @@ import { GetTopProductsUseCase } from './application/use_cases/get-top-products.
       OrderOrmEntity,
       OrderItemOrmEntity,
       UsersOrmEntity,
+      InvoiceOrmEntity,
     ]),
   ],
   controllers: [ProductsAdminController, DashboardAdminController],

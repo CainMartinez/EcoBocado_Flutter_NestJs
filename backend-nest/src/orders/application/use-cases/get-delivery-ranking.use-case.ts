@@ -68,7 +68,6 @@ export class GetDeliveryRankingUseCase {
         userPosition: userPosition !== -1 ? userPosition + 1 : null,
       };
     } catch (error) {
-      console.error('Error al obtener ranking:', error);
       // Retornar respuesta vacía en caso de error
       const now = new Date();
       const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;

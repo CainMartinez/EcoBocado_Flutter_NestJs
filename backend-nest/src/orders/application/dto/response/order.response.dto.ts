@@ -22,6 +22,13 @@ export class OrderResponseDto {
   })
   status: string;
 
+  @ApiProperty({ 
+    description: 'Tipo de entrega',
+    enum: ['pickup', 'delivery'],
+    example: 'delivery',
+  })
+  deliveryType: 'pickup' | 'delivery';
+
   @ApiPropertyOptional({ 
     description: 'ID del slot de recogida',
     example: 3,
