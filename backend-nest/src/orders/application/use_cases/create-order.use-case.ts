@@ -1,4 +1,6 @@
 import { Inject, Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as OrderRepo from '../../domain/repositories/order.repository.interface';
 import * as PaymentRepo from '../../../payment/domain/repositories/payment.repository.interface';
 import { DELIVERY_REPOSITORY_TOKEN } from '../../../delivery/domain/repositories/delivery.repository.interface';
@@ -9,6 +11,7 @@ import { CreateOrderRequestDto } from '../dto/request/create-order.request.dto';
 import { OrderResponseDto } from '../dto/response/order.response.dto';
 import { OrderItemResponseDto } from '../dto/response/order-item.response.dto';
 import { CreateInvoiceForOrderUseCase } from '../../../billing/application/use_cases/create-invoice-for-order.usecase';
+import { LoyaltyAccountOrmEntity } from '../../../loyalty/infrastructure/typeorm/entities-orm/loyalty-account.orm-entity';
 
 @Injectable()
 export class CreateOrderUseCase {
@@ -22,6 +25,8 @@ export class CreateOrderUseCase {
     @Inject(USER_ADDRESS_REPOSITORY_TOKEN)
     private readonly userAddressRepository: IUserAddressRepository,
     private readonly createInvoiceForOrderUseCase: CreateInvoiceForOrderUseCase,
+    @InjectRepository(LoyaltyAccountOrmEntity)
+    private readonly loyaltyAccountRepo: Repository<LoyaltyAccountOrmEntity>,
   ) {}
 
   async execute(userId: number, dto: CreateOrderRequestDto): Promise<OrderResponseDto> {
@@ -69,6 +74,11 @@ export class CreateOrderUseCase {
         paymentIntentId: dto.paymentIntentId,
       },
     );
+
+    // 🎁 Si el pedido se pagó, incrementar fidelidad
+    if (dto.paymentIntentId) {
+      await this.incrementLoyaltyPurchases(userId);
+    }
 
     // Si es delivery, crear el registro de delivery
     if (dto.deliveryType === 'delivery') {
@@ -128,6 +138,36 @@ export class CreateOrderUseCase {
     }
 
     return this.toResponseDto(order, items);
+  }
+
+  /**
+   * Incrementa el contador de compras del usuario en el sistema de fidelidad
+   */
+  private async incrementLoyaltyPurchases(userId: number): Promise<void> {
+    try {
+      // Buscar o crear cuenta de fidelidad
+      let account = await this.loyaltyAccountRepo.findOne({
+        where: { userId, isActive: true },
+      });
+
+      if (!account) {
+        // Crear cuenta si no existe
+        account = this.loyaltyAccountRepo.create({
+          userId,
+          points: 0,
+          purchasesCount: 1,
+          isActive: true,
+        });
+      } else {
+        // Incrementar contador
+        account.purchasesCount += 1;
+      }
+
+      await this.loyaltyAccountRepo.save(account);
+    } catch (error) {
+      // No fallar la orden si hay error en loyalty, solo loguear
+      console.error(`Error incrementando loyalty para usuario ${userId}:`, error);
+    }
   }
 
   private toResponseDto(order: any, items: any[]): OrderResponseDto {

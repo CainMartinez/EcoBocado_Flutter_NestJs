@@ -4,6 +4,7 @@ import { OrderOrmEntity } from './infrastructure/typeorm/entities-orm/order.orm-
 import { OrderItemOrmEntity } from './infrastructure/typeorm/entities-orm/order-item.orm-entity';
 import { DeliveryLocationOrmEntity } from './infrastructure/typeorm/entities-orm/delivery-location.orm-entity';
 import { PickupSlotOrmEntity } from '../locations/infrastructure/typeorm/entities-orm/pickup-slot.orm-entity';
+import { LoyaltyAccountOrmEntity } from '../loyalty/infrastructure/typeorm/entities-orm/loyalty-account.orm-entity';
 import { TypeOrmOrderRepository } from './infrastructure/typeorm/repositories/typeorm-order.repository';
 import { ORDER_REPOSITORY_TOKEN } from './domain/repositories/order.repository.interface';
 import { CreateOrderUseCase } from './application/use_cases/create-order.use-case';
@@ -27,6 +28,7 @@ import { BillingModule } from '../billing/billing.module';
       OrderItemOrmEntity,
       PickupSlotOrmEntity,
       DeliveryLocationOrmEntity,
+      LoyaltyAccountOrmEntity,
     ]),
     PaymentModule,
     DeliveryModule,

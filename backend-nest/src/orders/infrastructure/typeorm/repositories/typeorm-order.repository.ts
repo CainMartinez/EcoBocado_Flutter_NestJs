@@ -49,7 +49,10 @@ export class TypeOrmOrderRepository implements IOrderRepository {
       const total = subtotal;
 
       // Determinar el estado
-      const status = options?.paymentIntentId ? 'confirmed' : 'pending_payment';
+      // - Si hay paymentIntentId → confirmed (pedido pagado)
+      // - Si NO hay paymentIntentId Y total = 0 → confirmed (pedido gratuito, confirmado para que repartidor lo pueda entregar)
+      // - Si NO hay paymentIntentId Y total > 0 → pending_payment (esperando pago)
+      const status = (options?.paymentIntentId || total === 0) ? 'confirmed' : 'pending_payment';
 
       let pickupSlotId = options?.pickupSlotId ?? null;
 

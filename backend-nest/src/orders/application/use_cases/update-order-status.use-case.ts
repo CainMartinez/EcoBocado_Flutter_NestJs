@@ -80,4 +80,5 @@ export class UpdateOrderStatusUseCase {
       await this.orderRepository.updateStatus(orderId, newStatus);
     }
   }
+
 }

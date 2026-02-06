@@ -2,6 +2,7 @@ import { Controller, Get, HttpCode, Query, Request, UseGuards } from '@nestjs/co
 import { ApiOkResponse, ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
 import { QueryCatalogUseCase } from '../../application/use_cases/query-catalog.usecase';
 import { QueryCatalogRequestDto } from '../../application/dto/request/query-catalog.request.dto';
 import { PaginatedResponseDto } from '../../application/dto/response/paginated.response.dto';
@@ -11,6 +12,7 @@ import { CategoryResponseDto } from '../../application/dto/response/category.res
 import { CatalogAssembler } from '../assemblers/catalog.assembler';
 import { AllergenOrmEntity } from '../../infrastructure/typeorm/entities-orm/allergen.orm-entity';
 import { CategoryOrmEntity } from '../../infrastructure/typeorm/entities-orm/category.orm-entity';
+import { RescueMenuOrmEntity } from '../../infrastructure/typeorm/entities-orm/rescue-menu.orm-entity';
 import { OptionalJwtAuthGuard } from '../../../auth/presentation/guards/optional-jwt-auth.guard';
 import { USER_ALLERGEN_REPOSITORY_TOKEN } from '../../../profile/domain/repositories/user-allergen.repository.interface';
 import type { IUserAllergenRepository } from '../../../profile/domain/repositories/user-allergen.repository.interface';
@@ -22,10 +24,13 @@ export class ProductsController {
   constructor(
     private readonly queryCatalogUseCase: QueryCatalogUseCase,
     private readonly catalogAssembler: CatalogAssembler,
+    private readonly configService: ConfigService,
     @InjectRepository(AllergenOrmEntity)
     private readonly allergenRepository: Repository<AllergenOrmEntity>,
     @InjectRepository(CategoryOrmEntity)
     private readonly categoryRepository: Repository<CategoryOrmEntity>,
+    @InjectRepository(RescueMenuOrmEntity)
+    private readonly rescueMenuRepository: Repository<RescueMenuOrmEntity>,
     @Inject(USER_ALLERGEN_REPOSITORY_TOKEN)
     private readonly userAllergenRepository: IUserAllergenRepository,
   ) {}
@@ -119,5 +124,95 @@ export class ProductsController {
       nameEs: c.nameEs || c.code,
       nameEn: c.nameEn || c.code,
     }));
+  }
+
+  @Get('rescue-menus')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Listar menús de rescate para fidelidad',
+    description: 'Devuelve los menús disponibles para canje por fidelidad (10 compras)',
+  })
+  @ApiOkResponse({
+    description: 'Lista de menús de rescate activos',
+    isArray: true,
+  })
+  async getRescueMenus(): Promise<any[]> {
+    const menus = await this.rescueMenuRepository.find({
+      where: { isActive: true },
+      relations: [
+        'drink',
+        'drink.allergens',
+        'drink.images',
+        'starter',
+        'starter.allergens',
+        'starter.images',
+        'main',
+        'main.allergens',
+        'main.images',
+        'dessert',
+        'dessert.allergens',
+        'dessert.images',
+      ],
+      order: { id: 'ASC' },
+    });
+const baseUrl = this.configService.get<string>('MINIO_PUBLIC_URL') || 'http://localhost:9000';
+
+    return menus.map((menu) => {
+      // Mapear producto con alérgenos e imágenes
+      const mapProduct = (product: any) => {
+        if (!product) return null;
+        
+        // Filtrar alérgenos activos (contains o may_contain)
+        const productAllergens = product.allergens
+          ?.filter((pa: any) => pa.isActive && (pa.contains || pa.mayContain))
+          .map((pa: any) => pa.allergenCode)
+          .filter((code: string) => code != null) || [];
+        
+        // Construir URLs completas de imágenes
+        const productImages = product.images
+          ?.filter((img: any) => img.isActive)
+          .map((img: any) => `${baseUrl}${img.path}`) || [];
+        
+        return {
+          id: product.id,
+          nameEs: product.nameEs,
+          nameEn: product.nameEn,
+          allergens: productAllergens,
+          images: productImages,
+        };
+      };
+
+      // Recopilar todos los alérgenos del menú
+      const allAllergens = new Set<string>();
+      [menu.drink, menu.starter, menu.main, menu.dessert].forEach((product) => {
+        if (product?.allergens) {
+          product.allergens
+            .filter((pa: any) => pa.isActive && (pa.contains || pa.mayContain))
+            .forEach((pa: any) => {
+              if (pa.allergenCode) {
+                allAllergens.add(pa.allergenCode);
+              }
+            });
+        }
+      });
+
+      return {
+        id: menu.id,
+        uuid: menu.uuid,
+        nameEs: menu.nameEs,
+        nameEn: menu.nameEn,
+        descriptionEs: menu.descriptionEs,
+        descriptionEn: menu.descriptionEn,
+        price: parseFloat(menu.price.toString()),
+        currency: menu.currency,
+        isVegan: menu.isVegan,
+        isActive: menu.isActive,
+        allergens: Array.from(allAllergens),
+        drink: mapProduct(menu.drink),
+        starter: mapProduct(menu.starter),
+        main: mapProduct(menu.main),
+        dessert: mapProduct(menu.dessert),
+      };
+    });
   }
 }
