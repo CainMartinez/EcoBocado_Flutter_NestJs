@@ -128,13 +128,46 @@ class _CartPageState extends ConsumerState<CartPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    cartItem.item.name(context),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          cartItem.item.name(context),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                      ),
+                      if (cartItem.isRewardItem) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade600,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                '🎁',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'PREMIO',
+                                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -146,13 +179,22 @@ class _CartPageState extends ConsumerState<CartPage> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Text(
-                        '${cartItem.item.price.toStringAsFixed(2)} ${cartItem.item.currency}',
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
+                      if (cartItem.isRewardItem)
+                        Text(
+                          'GRATIS',
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                color: Colors.green.shade700,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        )
+                      else
+                        Text(
+                          '${cartItem.item.price.toStringAsFixed(2)} ${cartItem.item.currency}',
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       if (cartItem.item.isVegan) ...[
                         const SizedBox(width: 8),
                         Icon(
@@ -166,15 +208,35 @@ class _CartPageState extends ConsumerState<CartPage> {
                 ],
               ),
             ),
-            // Controles de cantidad
+            // Controles de cantidad (deshabilitados para premios)
             Column(
               children: [
-                _buildQuantityControls(context, cartItem),
+                if (!cartItem.isRewardItem)
+                  _buildQuantityControls(context, cartItem)
+                else
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.green.shade200),
+                    ),
+                    child: Text(
+                      'x1',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green.shade700,
+                          ),
+                    ),
+                  ),
                 const SizedBox(height: 8),
                 Text(
-                  '${cartItem.totalPrice.toStringAsFixed(2)} €',
+                  cartItem.isRewardItem 
+                    ? '0.00 €' 
+                    : '${cartItem.totalPrice.toStringAsFixed(2)} €',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: cartItem.isRewardItem ? Colors.green.shade700 : null,
                       ),
                 ),
               ],
@@ -373,11 +435,18 @@ class _CartPageState extends ConsumerState<CartPage> {
 
   void _showClearCartDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final cartState = ref.read(cartProvider);
+    final hasRewardItems = cartState.items.any((item) => item.isRewardItem);
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.clearCartDialogTitle),
-        content: Text(l10n.clearCartDialogMessage),
+        content: Text(
+          hasRewardItems
+            ? 'Se eliminarán todos los productos del carrito. Los premios canjeados se mantendrán.'
+            : l10n.clearCartDialogMessage,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -418,24 +487,29 @@ class _CartPageState extends ConsumerState<CartPage> {
     }
     
     try {
-      // 1. Procesar pago con Stripe
-      final paymentService = ref.read(paymentServiceProvider);
-      final paymentIntentId = await paymentService.processPayment(
-        amount: cartState.totalPrice,
-        currency: 'eur',
-        customerName: userName,
-      );
+      String? paymentIntentId;
       
-      // Esperar a que el pago se confirme en el backend
-      await Future.delayed(const Duration(seconds: 2));
-      
-      // Verificar que el pago está completado
-      final paymentStatus = await paymentService.getPaymentStatus(paymentIntentId);
-      if (paymentStatus['status'] != 'succeeded') {
-        throw Exception('El pago no se completó correctamente');
+      // 1. Procesar pago con Stripe solo si el total es mayor a 0
+      if (cartState.totalPrice > 0) {
+        final paymentService = ref.read(paymentServiceProvider);
+        paymentIntentId = await paymentService.processPayment(
+          amount: cartState.totalPrice,
+          currency: 'eur',
+          customerName: userName,
+        );
+        
+        // Esperar a que el pago se confirme en el backend
+        await Future.delayed(const Duration(seconds: 2));
+        
+        // Verificar que el pago está completado
+        final paymentStatus = await paymentService.getPaymentStatus(paymentIntentId);
+        if (paymentStatus['status'] != 'succeeded') {
+          throw Exception('El pago no se completó correctamente');
+        }
       }
+      // Si el total es 0 (pedido gratuito), no se procesa pago
 
-      // 2. Crear la orden con el pago confirmado y los datos de delivery
+      // 2. Crear la orden con el pago confirmado (o sin pago si es gratuito) y los datos de delivery
       final order = await ref.read(ordersProvider.notifier).createOrderFromCart(
         cartState,
         deliveryType: deliveryData['deliveryType'] as String?,
@@ -472,8 +546,8 @@ class _CartPageState extends ConsumerState<CartPage> {
           ref: ref,
         );
 
-        // Limpiar carrito
-        ref.read(cartProvider.notifier).clear();
+        // Limpiar carrito completamente (incluyendo premios ya usados)
+        ref.read(cartProvider.notifier).clearAll();
 
         // Navegar a órdenes
         if (!context.mounted) return;
@@ -488,10 +562,14 @@ class _CartPageState extends ConsumerState<CartPage> {
         Future.delayed(const Duration(milliseconds: 100), () {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('¡Pedido y pago realizados con éxito!'),
+              SnackBar(
+                content: Text(
+                  paymentIntentId != null 
+                    ? '¡Pedido y pago realizados con éxito!' 
+                    : '¡Pedido realizado con éxito!',
+                ),
                 backgroundColor: Colors.green,
-                duration: Duration(seconds: 3),
+                duration: const Duration(seconds: 3),
               ),
             );
           }

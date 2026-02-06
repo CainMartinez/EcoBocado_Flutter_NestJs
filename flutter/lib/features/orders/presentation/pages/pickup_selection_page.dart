@@ -25,6 +25,36 @@ class _PickupSelectionPageState extends State<PickupSelectionPage> {
     TimeSlot(startTime: '20:00:00', endTime: '21:00:00', label: '20:00 - 21:00'),
   ];
 
+  /// Filtra los slots de tiempo disponibles.
+  /// Si la fecha seleccionada es hoy, solo muestra slots cuyo endTime sea después de la hora actual.
+  List<TimeSlot> get filteredTimeSlots {
+    if (selectedDate == null) return availableTimeSlots;
+
+    final now = DateTime.now();
+    final isToday = selectedDate!.year == now.year &&
+        selectedDate!.month == now.month &&
+        selectedDate!.day == now.day;
+
+    if (!isToday) return availableTimeSlots;
+
+    // Filtrar slots que ya pasaron
+    return availableTimeSlots.where((slot) {
+      final endParts = slot.endTime.split(':');
+      final endHour = int.parse(endParts[0]);
+      final endMinute = int.parse(endParts[1]);
+      
+      final slotEndTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        endHour,
+        endMinute,
+      );
+
+      return slotEndTime.isAfter(now);
+    }).toList();
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime now = DateTime.now();
     final DateTime firstDate = now;
@@ -179,6 +209,30 @@ class _PickupSelectionPageState extends State<PickupSelectionPage> {
                         ),
                       ),
                     )
+                  else if (filteredTimeSlots.isEmpty)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.orange.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline, color: Colors.orange.shade700),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'No hay franjas horarias disponibles para hoy. Por favor, selecciona otra fecha.',
+                              style: TextStyle(
+                                color: Colors.orange.shade900,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                   else
                     GridView.builder(
                       shrinkWrap: true,
@@ -189,9 +243,9 @@ class _PickupSelectionPageState extends State<PickupSelectionPage> {
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
                       ),
-                      itemCount: availableTimeSlots.length,
+                      itemCount: filteredTimeSlots.length,
                       itemBuilder: (context, index) {
-                        final timeSlot = availableTimeSlots[index];
+                        final timeSlot = filteredTimeSlots[index];
                         final isSelected = selectedTimeSlot == timeSlot;
 
                         return Material(

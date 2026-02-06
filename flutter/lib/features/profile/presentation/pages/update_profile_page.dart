@@ -20,7 +20,6 @@ class _UpdateProfilePageState extends ConsumerState<UpdateProfilePage> {
   late TextEditingController _cityController;
   late TextEditingController _postalCodeController;
   late TextEditingController _countryCodeController;
-  late TextEditingController _avatarUrlController;
 
   bool _isLoading = false;
 
@@ -36,7 +35,6 @@ class _UpdateProfilePageState extends ConsumerState<UpdateProfilePage> {
     _cityController = TextEditingController(text: profile?.city ?? '');
     _postalCodeController = TextEditingController(text: profile?.postalCode ?? '');
     _countryCodeController = TextEditingController(text: profile?.countryCode ?? 'ES');
-    _avatarUrlController = TextEditingController(text: profile?.avatarUrl ?? '');
   }
 
   @override
@@ -47,7 +45,6 @@ class _UpdateProfilePageState extends ConsumerState<UpdateProfilePage> {
     _cityController.dispose();
     _postalCodeController.dispose();
     _countryCodeController.dispose();
-    _avatarUrlController.dispose();
     super.dispose();
   }
 
@@ -64,7 +61,6 @@ class _UpdateProfilePageState extends ConsumerState<UpdateProfilePage> {
             city: _cityController.text.trim().isEmpty ? null : _cityController.text.trim(),
             postalCode: _postalCodeController.text.trim().isEmpty ? null : _postalCodeController.text.trim(),
             countryCode: _countryCodeController.text.trim().isEmpty ? null : _countryCodeController.text.trim(),
-            avatarUrl: _avatarUrlController.text.trim().isEmpty ? null : _avatarUrlController.text.trim(),
           );
 
       if (mounted) {
@@ -107,16 +103,6 @@ class _UpdateProfilePageState extends ConsumerState<UpdateProfilePage> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Avatar URL
-            AppTextField(
-              controller: _avatarUrlController,
-              label: l10n.avatarUrl,
-              hint: 'https://example.com/avatar.jpg',
-              keyboardType: TextInputType.url,
-              prefixIcon: const Icon(Icons.image),
-            ),
-            const SizedBox(height: 16),
-
             // Teléfono
             AppTextField(
               controller: _phoneController,

@@ -92,7 +92,7 @@ class OrdersNotifier extends Notifier<OrdersState> {
           itemType: cartItem.item.type == 'product' ? 'product' : 'menu',
           itemId: cartItem.item.id,
           quantity: cartItem.quantity.toDouble(),
-          unitPrice: cartItem.item.price,
+          unitPrice: cartItem.isRewardItem ? 0.0 : cartItem.item.price,
         );
       }).toList();
 

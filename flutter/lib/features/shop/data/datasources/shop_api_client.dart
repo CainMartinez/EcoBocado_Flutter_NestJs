@@ -3,6 +3,7 @@ import '../../domain/entities/catalog_filters.dart';
 import '../../domain/entities/paginated_catalog.dart';
 import '../../domain/entities/allergen.dart';
 import '../../domain/entities/category.dart';
+import '../../domain/entities/rescue_menu.dart';
 import '../../../../core/utils/app_services.dart';
 
 /// Cliente API para el módulo Shop
@@ -44,6 +45,17 @@ class ShopApiClient {
       final response = await _dio.get('/products/categories');
       final List<dynamic> data = response.data as List<dynamic>;
       return data.map((json) => Category.fromJson(json as Map<String, dynamic>)).toList();
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Obtiene todos los menús de rescate activos
+  Future<List<RescueMenu>> getRescueMenus() async {
+    try {
+      final response = await _dio.get('/products/rescue-menus');
+      final List<dynamic> data = response.data as List<dynamic>;
+      return data.map((json) => RescueMenu.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw _handleDioError(e);
     }

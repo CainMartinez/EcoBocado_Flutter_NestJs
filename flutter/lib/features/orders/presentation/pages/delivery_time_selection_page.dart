@@ -33,6 +33,36 @@ class _DeliveryTimeSelectionPageState extends State<DeliveryTimeSelectionPage> {
 
   bool get isTemporaryAddress => widget.addressData?['isTemporary'] == true;
 
+  /// Filtra los slots de tiempo disponibles.
+  /// Si la fecha seleccionada es hoy, solo muestra slots cuyo endTime sea después de la hora actual.
+  List<TimeSlot> get filteredTimeSlots {
+    if (selectedDate == null) return availableTimeSlots;
+
+    final now = DateTime.now();
+    final isToday = selectedDate!.year == now.year &&
+        selectedDate!.month == now.month &&
+        selectedDate!.day == now.day;
+
+    if (!isToday) return availableTimeSlots;
+
+    // Filtrar slots que ya pasaron
+    return availableTimeSlots.where((slot) {
+      final endParts = slot.endTime.split(':');
+      final endHour = int.parse(endParts[0]);
+      final endMinute = int.parse(endParts[1]);
+      
+      final slotEndTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        endHour,
+        endMinute,
+      );
+
+      return slotEndTime.isAfter(now);
+    }).toList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -236,53 +266,78 @@ class _DeliveryTimeSelectionPageState extends State<DeliveryTimeSelectionPage> {
                           ),
                     ),
                     const SizedBox(height: 16),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 2.5,
-                      ),
-                      itemCount: availableTimeSlots.length,
-                      itemBuilder: (context, index) {
-                        final slot = availableTimeSlots[index];
-                        final isSelected = selectedTimeSlot == slot;
-
-                        return InkWell(
-                          onTap: () {
-                            setState(() {
-                              selectedTimeSlot = slot;
-                            });
-                          },
+                    if (filteredTimeSlots.isEmpty)
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade50,
                           borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.grey.shade300,
-                                width: 2,
-                              ),
-                            ),
-                            child: Center(
+                          border: Border.all(color: Colors.orange.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.info_outline, color: Colors.orange.shade700),
+                            const SizedBox(width: 12),
+                            Expanded(
                               child: Text(
-                                slot.label,
+                                'No hay franjas horarias disponibles para hoy. Por favor, selecciona otra fecha.',
                                 style: TextStyle(
-                                  color: isSelected ? Colors.white : Colors.black87,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: Colors.orange.shade900,
+                                  fontSize: 14,
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          ],
+                        ),
+                      )
+                    else
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 2.5,
+                        ),
+                        itemCount: filteredTimeSlots.length,
+                        itemBuilder: (context, index) {
+                          final slot = filteredTimeSlots[index];
+                          final isSelected = selectedTimeSlot == slot;
+
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedTimeSlot = slot;
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.grey.shade300,
+                                  width: 2,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  slot.label,
+                                  style: TextStyle(
+                                    color: isSelected ? Colors.white : Colors.black87,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                   ],
                 ],
               ),

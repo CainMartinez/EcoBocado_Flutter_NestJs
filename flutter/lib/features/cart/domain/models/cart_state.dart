@@ -4,23 +4,31 @@ import '../../../shop/domain/entities/catalog_item.dart';
 class CartItem {
   final CatalogItem item;
   final int quantity;
+  final bool isRewardItem; // Indica si es un menú de rescate gratuito
+  final int? redemptionId; // ID de la redención de fidelidad
 
   const CartItem({
     required this.item,
     required this.quantity,
+    this.isRewardItem = false,
+    this.redemptionId,
   });
 
   CartItem copyWith({
     CatalogItem? item,
     int? quantity,
+    bool? isRewardItem,
+    int? redemptionId,
   }) {
     return CartItem(
       item: item ?? this.item,
       quantity: quantity ?? this.quantity,
+      isRewardItem: isRewardItem ?? this.isRewardItem,
+      redemptionId: redemptionId ?? this.redemptionId,
     );
   }
 
-  double get totalPrice => item.price * quantity;
+  double get totalPrice => isRewardItem ? 0.0 : item.price * quantity;
 }
 
 /// Estado del carrito

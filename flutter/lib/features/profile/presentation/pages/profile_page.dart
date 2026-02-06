@@ -9,6 +9,7 @@ import 'package:eco_bocado/features/profile/presentation/widgets/editable_profil
 import 'package:eco_bocado/features/profile/presentation/widgets/profile_role_badge.dart';
 import 'package:eco_bocado/features/profile/presentation/widgets/profile_info_row.dart';
 import 'package:eco_bocado/features/profile/presentation/widgets/user_allergens_section.dart';
+import 'package:eco_bocado/features/profile/presentation/widgets/loyalty_progress_card.dart';
 import 'package:eco_bocado/features/auth/presentation/providers/auth_provider.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -83,6 +84,10 @@ class ProfilePage extends ConsumerWidget {
                 // 🌟 SECCIÓN DESTACADA DE ALÉRGENOS - Solo para usuarios (no admins)
                 if (!profile.isAdmin) ...[  
                   const UserAllergensSection(),
+                  const SizedBox(height: 16),
+                  
+                  // 🎁 PROGRAMA DE FIDELIDAD
+                  const LoyaltyProgressCard(),
                   const SizedBox(height: 24),
                 ],
 
