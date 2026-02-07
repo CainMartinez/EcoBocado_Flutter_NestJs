@@ -1,9 +1,11 @@
-import { Controller, Get, Patch, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiOkResponse, ApiUnauthorizedResponse, ApiBearerAuth, ApiProperty, ApiBadRequestResponse } from '@nestjs/swagger';
+import { Controller, Get, Patch, Post, Body, UseGuards, Request, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiOkResponse, ApiUnauthorizedResponse, ApiBearerAuth, ApiProperty, ApiBadRequestResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { IsBoolean } from 'class-validator';
 import { DeliveryJwtAuthGuard } from '../guards/delivery-jwt-auth.guard';
 import { GetDeliveryProfileUseCase } from '../../application/use_cases/get-delivery-profile.usecase';
 import { UpdateAvailabilityUseCase } from '../../application/use_cases/update-availability.usecase';
+import { UploadDeliveryAvatarUseCase } from '../../application/use_cases/upload-delivery-avatar.usecase';
 import { DeliveryDriverPublicAssembler } from '../assemblers/delivery-driver-public.assembler';
 
 /**
@@ -62,6 +64,7 @@ export class DeliveryProfileController {
   constructor(
     private readonly getProfileUseCase: GetDeliveryProfileUseCase,
     private readonly updateAvailabilityUseCase: UpdateAvailabilityUseCase,
+    private readonly uploadAvatarUseCase: UploadDeliveryAvatarUseCase,
     private readonly assembler: DeliveryDriverPublicAssembler,
   ) {}
 
@@ -129,6 +132,49 @@ export class DeliveryProfileController {
       req.user.driverId,
       body.isAvailable,
     );
+    return this.assembler.toPublic(driver);
+  }
+
+  /**
+   * Subir o actualizar foto de perfil del repartidor
+   * 
+   * Permite al repartidor cambiar su foto de perfil (avatar).
+   * La imagen se sube a MinIO y se retorna la URL actualizada.
+   */
+  @Post('avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({
+    summary: 'Subir o actualizar foto de perfil',
+    description: 'Sube una nueva foto de perfil del repartidor a MinIO y actualiza su URL en la base de datos',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'Archivo de imagen (JPG, PNG, etc.)',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'Avatar actualizado correctamente',
+    type: DeliveryDriverPublicDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Token inválido o expirado',
+  })
+  @ApiBadRequestResponse({
+    description: 'Archivo no proporcionado o formato inválido',
+  })
+  async uploadAvatar(
+    @Request() req: any,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<DeliveryDriverPublicDto> {
+    const driver = await this.uploadAvatarUseCase.execute(req.user.driverId, file);
     return this.assembler.toPublic(driver);
   }
 }

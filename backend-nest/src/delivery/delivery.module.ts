@@ -13,11 +13,13 @@ import { DeliveryLoginUseCase } from './application/use_cases/delivery-login.use
 import { GetDeliveryProfileUseCase } from './application/use_cases/get-delivery-profile.usecase';
 import { UpdateAvailabilityUseCase } from './application/use_cases/update-availability.usecase';
 import { RegisterDeliveryDriverUseCase } from './application/use_cases/register-delivery-driver.usecase';
+import { UploadDeliveryAvatarUseCase } from './application/use_cases/upload-delivery-avatar.usecase';
 import { DeliveryLoginController } from './presentation/controllers/delivery-login.controller';
 import { DeliveryProfileController } from './presentation/controllers/delivery-profile.controller';
 import { DeliveryRegisterController } from './presentation/controllers/delivery-register.controller';
 import { DeliveryDriverPublicAssembler } from './presentation/assemblers/delivery-driver-public.assembler';
 import { AuthModule } from '../auth/auth.module';
+import { MediaModule } from '../media/media.module';
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { AuthModule } from '../auth/auth.module';
       },
     }),
     AuthModule, // Para usar PasswordHasherService
+    MediaModule, // Para usar MinioClientService
   ],
   controllers: [DeliveryLoginController, DeliveryProfileController, DeliveryRegisterController],
   providers: [
@@ -40,6 +43,7 @@ import { AuthModule } from '../auth/auth.module';
     GetDeliveryProfileUseCase,
     UpdateAvailabilityUseCase,
     RegisterDeliveryDriverUseCase,
+    UploadDeliveryAvatarUseCase,
     DeliveryDriverPublicAssembler,
     {
       provide: IDeliveryDriverRepository,
