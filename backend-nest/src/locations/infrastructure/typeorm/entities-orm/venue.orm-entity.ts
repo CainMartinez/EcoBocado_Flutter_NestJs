@@ -15,6 +15,18 @@ export class VenueOrmEntity {
   @Column({ type: 'varchar', length: 190, nullable: true })
   name: string | null;
 
+  @Column({ type: 'varchar', length: 190, nullable: true, unique: true })
+  email: string | null;
+
+  @Column({ name: 'password_hash', type: 'varchar', length: 255, nullable: true })
+  passwordHash: string | null;
+
+  @Column({ name: 'avatar_url', type: 'varchar', length: 255, nullable: true })
+  avatarUrl: string | null;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  phone: string | null;
+
   @Column({
     type: 'varchar',
     length: 50,
